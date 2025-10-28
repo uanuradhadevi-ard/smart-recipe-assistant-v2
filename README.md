@@ -1,206 +1,112 @@
-# Smart Recipe Assistant 🍳
+# Smart Recipe Assistant
 
-A beautiful, production-ready recipe finder application built for busy professionals like Taylor who want to cook based on ingredients they have, their mood, or time available.
+A beautiful, production-ready recipe finder application built for busy professionals who want to cook based on ingredients they have, their mood, or time available.
 
-## ✨ Features
+## Features
 
-### Core Functionality
-- 🔍 **Search by Ingredients** - Find recipes using what you have in your pantry
-  - Supports single ingredient: "chicken"
-  - Supports multiple ingredients: "chicken, tomato, rice"
-- 🎭 **Mood & Cravings** - Intelligent mood-based recipe discovery
-  - Understands keywords like: "spicy", "comfort food", "healthy", "Italian"
-  - Maps moods to ingredients and cuisines
-  - Returns relevant recipe suggestions
-- ⏱️ **Time-Based Filtering** - Find recipes that fit your schedule
-  - Parses: "quick", "30 minutes", "under 1 hour", "2 hours"
-  - Filters recipes by estimated cooking time
+- **Recipe Search**: Find recipes by ingredients, mood/cravings, or time available
+- **Weekly Meal Planner**: Plan your meals for the week with a calendar-like interface
+- **Shopping List**: Automatically generate shopping lists from planned meals
+- **Unit Conversion**: Convert recipe measurements to store-friendly units (g/kg, ml/L)
+- **Favorites**: Save your favorite recipes
+- **Responsive Design**: Works perfectly on desktop and mobile devices
 
-### Enhanced Recipe Data
-- 📊 **Recipe Statistics**: Estimated time, servings, difficulty level, cost
-- 🥗 **Nutritional Information**: Calories, protein, carbs, fat
-- 💡 **Pro Cooking Tips**: Contextual advice based on recipe
-- 🍽️ **Full Recipe Details**: Ingredients with measurements, step-by-step instructions
+## Live Demo
 
-### User Features
-- ❤️ **Favorites System**: Save recipes to localStorage
-- 🗓️ **Weekly Meal Planner**: Assign recipes to days and meal slots
-- 🧾 **Shopping List**: Ingredient + quantity, add/edit/delete, generate from planner
-- 🎨 **Beautiful UI**: Modern design with Tailwind CSS
-- 📱 **Responsive Design**: Works on desktop, tablet, and mobile
-- ⚡ **Fast Search**: Instant results with loading states
+🌐 **[View Live Demo](https://your-username.github.io/smart-recipe-assistant)**
 
-## 🚀 Getting Started
+## Tech Stack
+
+- **Frontend**: React + TypeScript + Vite
+- **Styling**: Tailwind CSS
+- **API**: TheMealDB API
+- **Storage**: localStorage for client-side persistence
+- **Deployment**: GitHub Pages
+
+## Getting Started
 
 ### Prerequisites
-- Node.js 18+ installed
-- npm or yarn package manager
+
+- Node.js 18+ 
+- npm or yarn
 
 ### Installation
 
-1. **Navigate to project directory**
-   ```bash
-   cd Smart-Recipe-Assistant-main
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Start development server**
-   ```bash
-   npm run dev
-   ```
-
-4. **Open in browser**
-   ```
-   http://localhost:5173
-   ```
-
-### Build for Production
-
+1. Clone the repository:
 ```bash
-npm run build
+git clone https://github.com/your-username/smart-recipe-assistant.git
+cd smart-recipe-assistant
 ```
 
-Preview production build:
+2. Install dependencies:
 ```bash
-npm run preview
+npm install
 ```
 
-## 🎯 Usage Guide
-### Weekly Meal Planner
-1. Click the "Planner" tab
-2. For each day/slot, type a recipe id or name and press +
-3. The meal is saved for that week and its ingredients are added to the Shopping List
+3. Start the development server:
+```bash
+npm run dev
+```
+
+4. Open [http://localhost:5173](http://localhost:5173) in your browser
+
+## Usage
+
+### Recipe Search
+- **By Ingredients**: Enter ingredients you have (e.g., "chicken, tomatoes")
+- **Mood & Cravings**: Describe what you're craving (e.g., "spicy", "comfort food")
+- **Time Available**: Specify how much time you have (e.g., "quick", "30 minutes")
+
+### Meal Planner
+- Navigate to the "Planner" tab
+- Select a week using the navigation buttons
+- Add recipes to specific days and meal slots (Breakfast, Lunch, Dinner, Snack)
+- Use autocomplete to quickly find recipes
 
 ### Shopping List
-1. Click the "Shopping" tab
-2. Add items manually or click "Generate from Planner"
-3. Check off items as you shop; edit quantities inline
+- Navigate to the "Shopping" tab
+- Click "Generate from Planner" to auto-populate ingredients from planned meals
+- Toggle "Convert to store units" for practical shopping measurements
+- Add, edit, or delete items manually
 
-### Search by Ingredients
-1. Click "By Ingredients" tab
-2. Enter ingredients: "chicken, tomato, rice"
-3. Get recipes containing ALL specified ingredients
-
-### Search by Mood
-1. Click "Mood & Cravings" tab
-2. Enter your mood: "spicy", "comfort food", "healthy"
-3. Get curated recipe suggestions
-
-### Search by Time
-1. Click "Time Available" tab
-2. Enter time: "quick", "30 minutes", "under 1 hour"
-3. Get recipes that fit your schedule
-
-### Save Favorites
-- Click the ❤️ icon on any recipe card
-- View all favorites in the "Favorites" tab
-- Favorites persist across sessions
-
-## 🛠️ Technology Stack
-
-- **Framework**: React 18 with TypeScript
-- **Build Tool**: Vite 5
-- **Styling**: Tailwind CSS
-- **Icons**: Lucide React
-- **API**: TheMealDB (free recipe API)
-- **State Management**: React Hooks
-- **Storage**: localStorage for favorites
-
-## 📁 Project Structure
+## Project Structure
 
 ```
-Smart-Recipe-Assistant-main/
-├── src/
-│   ├── components/         # React components
-│   │   ├── RecipeCard.tsx  # Recipe display card
-│   │   └── RecipeModal.tsx # Detailed recipe view
-│   ├── services/           # API services
-│   │   └── mealDB.ts       # TheMealDB API integration
-│   ├── utils/              # Utility functions
-│   │   ├── favorites.ts           # Favorites management
-│   │   ├── recipeEnhancer.ts     # Recipe data enrichment
-│   │   └── searchFilters.ts      # Search filtering logic
-│   ├── types/              # TypeScript types
-│   │   └── recipe.ts       # Recipe interfaces
-│   ├── App.tsx             # Main application
-│   └── main.tsx            # Entry point
-├── index.html
-├── package.json
-└── vite.config.ts
+src/
+├── components/          # React components
+│   ├── MealPlanner.tsx  # Weekly meal planning interface
+│   ├── RecipeCard.tsx   # Recipe display card
+│   ├── RecipeModal.tsx  # Detailed recipe view
+│   └── ShoppingList.tsx # Shopping list management
+├── services/           # API services
+│   └── mealDB.ts       # TheMealDB API integration
+├── types/              # TypeScript type definitions
+│   ├── mealPlan.ts     # Meal planning types
+│   └── recipe.ts       # Recipe data types
+├── utils/              # Utility functions
+│   ├── autocomplete.ts  # Search suggestions
+│   ├── favorites.ts    # Favorites management
+│   ├── plannerStorage.ts # localStorage for meal plans
+│   ├── recipeEnhancer.ts # Recipe data enhancement
+│   ├── searchFilters.ts # Search filtering logic
+│   └── unitConversion.ts # Unit conversion utilities
+└── App.tsx            # Main application component
 ```
 
-## 🎓 Assignment Compliance
+## Contributing
 
-### ✅ Requirements Met
-- ✅ **TheMealDB API Integration**: Full implementation
-- ✅ **Core Functionality**: All three search modes working
-- ✅ **Beautiful UI**: Production-ready design
-- ✅ **User-Friendly UX**: Intuitive navigation
-- ✅ **Enhanced Data**: Beyond basic API response
-- ✅ **LLM Usage**: Built with AI assistance
-- ✅ **Code Quality**: Clean, readable, commented
-- ✅ **Error Handling**: Graceful error messages
-- ✅ **Responsive**: Works on all devices
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature-name`
+3. Commit your changes: `git commit -m 'Add some feature'`
+4. Push to the branch: `git push origin feature-name`
+5. Submit a pull request
 
-### 📋 Testing Checklist
-- [x] Basic search functionality
-- [x] Multiple ingredient search
-- [x] Mood-based filtering
-- [x] Time-based filtering
-- [x] Favorites system
-- [x] Recipe details modal
-- [x] Error handling
-- [ ] Mobile responsiveness testing
-- [ ] Network error testing
-- [ ] Edge case testing
+## License
 
-## 🎥 Video Demonstration
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-**Status**: Ready to record
+## Acknowledgments
 
-**What to Show**:
-1. Search by ingredients (single and multiple)
-2. Search by mood ("spicy", "comfort food")
-3. Search by time ("quick", "30 minutes")
-4. Save and view favorites
-5. View recipe details with enhanced data
-6. Error handling
-
-## 🤖 LLM Usage
-
-This project was built using AI assistance (Cursor/Claude) for:
-- Code generation and structure
-- Problem-solving and debugging
-- Feature implementation
-- UI/UX design decisions
-- Algorithm development (mood mapping, time parsing)
-
-## 📝 License
-
-This project was built for educational purposes.
-
-## 👤 User Persona: Taylor
-
-**Taylor** is a busy professional who:
-- Wants to cook based on available ingredients
-- Needs recipes that match their mood/cravings
-- Has limited cooking time
-- Values quick, helpful recipe suggestions
-- Appreciates beautiful, user-friendly interfaces
-
-## 🌟 Key Features Highlights
-
-1. **Smart Search**: Goes beyond simple keyword matching
-2. **Intelligent Filtering**: Understands context and intent
-3. **Enhanced Data**: Provides value beyond basic recipe info
-4. **Persistent Storage**: Favorites saved locally
-5. **Beautiful Design**: Not cookie-cutter, production-worthy
-6. **Error Handling**: Graceful degradation
-
----
-
-**Built with ❤️ for Taylor and all busy professionals who want to cook great meals!**
+- [TheMealDB](https://www.themealdb.com/) for providing the recipe API
+- [Lucide React](https://lucide.dev/) for beautiful icons
+- [Tailwind CSS](https://tailwindcss.com/) for styling
