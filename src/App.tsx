@@ -31,6 +31,12 @@ function App() {
   const [favoritesCount, setFavoritesCount] = useState(0);
   const [simpleIdeas, setSimpleIdeas] = useState<string[]>([]);
   const [onlyMyIngredients, setOnlyMyIngredients] = useState<boolean>(false);
+  const [dark, setDark] = useState<boolean>(() => {
+    try {
+      const v = localStorage.getItem('tt_dark');
+      return v === '1';
+    } catch { return false; }
+  });
 
   const [error, setError] = useState<string | null>(null);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -562,9 +568,9 @@ function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-saffron-100 via-white to-saffron-100">
+    <div className={(dark ? 'dark ' : '') + 'min-h-screen bg-gradient-to-br from-saffron-100 via-white to-saffron-100 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900'}>
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-saffron-100 sticky top-0 z-30">
+      <header className="bg-white dark:bg-gray-900 shadow-sm border-b border-saffron-100 dark:border-gray-800 sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-2 sm:mb-4">
             <div className="flex items-center space-x-3">
@@ -572,14 +578,25 @@ function App() {
                 <ChefHat className="h-8 w-8 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Tasty Thoughts</h1>
-                <p className="text-xs sm:text-sm text-gray-600">Culinary ideas with what you already have</p>
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-100">Tasty Thoughts</h1>
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Culinary ideas with what you already have</p>
               </div>
             </div>
             
+            {/* Dark Mode Toggle */}
+            <div className="flex justify-end mb-2 sm:mb-0">
+              <button
+                onClick={() => { setDark(d => { const nv = !d; try { localStorage.setItem('tt_dark', nv ? '1' : '0'); } catch{} return nv; }); }}
+                className="px-3 py-2 text-xs rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
+                aria-label="Toggle dark mode"
+              >
+                {dark ? 'Light' : 'Dark'}
+              </button>
+            </div>
+
             {/* Navigation Tabs */}
             <div className="-mx-4 sm:mx-0 px-4 sm:px-0">
-            <div className="grid grid-cols-4 gap-1 sm:inline-flex sm:space-x-2 bg-gray-100 p-1 rounded-xl w-full">
+            <div className="grid grid-cols-4 gap-1 sm:inline-flex sm:space-x-2 bg-gray-100 dark:bg-gray-800 p-1 rounded-xl w-full">
               <button
                 onClick={() => {
                   setViewMode('search');
@@ -588,8 +605,8 @@ function App() {
                 }}
                 className={`flex flex-col items-center justify-center space-y-1 text-xs sm:text-base px-2 py-2 sm:flex-row sm:space-y-0 sm:space-x-2 sm:px-4 sm:py-2 rounded-lg transition-all flex-1 sm:flex-none ${
                   viewMode === 'search'
-                    ? 'bg-white shadow-md text-saffron-700 font-semibold'
-                    : 'text-gray-600 hover:text-gray-800'
+                    ? 'bg-white dark:bg-gray-900 shadow-md text-saffron-700 dark:text-saffron-400 font-semibold'
+                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white'
                 }`}
               >
                 <Home className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -599,8 +616,8 @@ function App() {
                 onClick={loadFavorites}
                 className={`flex flex-col items-center justify-center space-y-1 text-xs sm:text-base px-2 py-2 sm:flex-row sm:space-y-0 sm:space-x-2 sm:px-4 sm:py-2 rounded-lg transition-all flex-1 sm:flex-none ${
                   viewMode === 'favorites'
-                    ? 'bg-white shadow-md text-saffron-700 font-semibold'
-                    : 'text-gray-600 hover:text-gray-800'
+                    ? 'bg-white dark:bg-gray-900 shadow-md text-saffron-700 dark:text-saffron-400 font-semibold'
+                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white'
                 }`}
               >
                 <HeartIcon className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -615,8 +632,8 @@ function App() {
                 onClick={() => setViewMode('planner')}
                 className={`flex flex-col items-center justify-center space-y-1 text-xs sm:text-base px-2 py-2 sm:flex-row sm:space-y-0 sm:space-x-2 sm:px-4 sm:py-2 rounded-lg transition-all flex-1 sm:flex-none ${
                   viewMode === 'planner'
-                    ? 'bg-white shadow-md text-saffron-700 font-semibold'
-                    : 'text-gray-600 hover:text-gray-800'
+                    ? 'bg-white dark:bg-gray-900 shadow-md text-saffron-700 dark:text-saffron-400 font-semibold'
+                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white'
                 }`}
               >
                 <CalendarDays className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -626,8 +643,8 @@ function App() {
                 onClick={() => setViewMode('shopping')}
                 className={`flex flex-col items-center justify-center space-y-1 text-xs sm:text-base px-2 py-2 sm:flex-row sm:space-y-0 sm:space-x-2 sm:px-4 sm:py-2 rounded-lg transition-all flex-1 sm:flex-none ${
                   viewMode === 'shopping'
-                    ? 'bg-white shadow-md text-saffron-700 font-semibold'
-                    : 'text-gray-600 hover:text-gray-800'
+                    ? 'bg-white dark:bg-gray-900 shadow-md text-saffron-700 dark:text-saffron-400 font-semibold'
+                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white'
                 }`}
               >
                 <ListChecks className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -643,7 +660,7 @@ function App() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Favorites View */}
         {viewMode === 'favorites' && (
-          <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8 mb-8">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-2xl font-bold text-gray-800 mb-2">Your Favorites</h2>
@@ -676,10 +693,10 @@ function App() {
         {viewMode === 'search' && (
           <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
           <div className="mb-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4">
               What do you want to cook today?
             </h2>
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-300">
               Tell me what ingredients you have, what you're craving, or how much time you have.
             </p>
           </div>
@@ -705,8 +722,8 @@ function App() {
                 }}
                 className={`flex items-center space-x-2 px-4 py-2 sm:px-6 sm:py-3 rounded-xl transition-all text-sm sm:text-base ${
                   filterType === type
-                    ? 'bg-gradient-to-r from-saffron-500 to-saffron-600 text-white shadow-lg scale-105'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-gradient-to-r from-saffron-500 to-saffron-600 text-white shadow-lg scale-105'
+                  : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700'
                 }`}
               >
                 <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -757,12 +774,12 @@ function App() {
                     ? 'What are you craving? (e.g., "spicy", "comfort food")'
                     : 'How much time do you have? (e.g., "quick", "30 minutes")'
                 }
-                className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:border-saffron-500 focus:outline-none text-lg"
+                className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-saffron-500 focus:outline-none text-lg bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100"
               />
               
               {/* Autocomplete Dropdown */}
               {showSuggestions && suggestions.length > 0 && (
-                <div className="absolute z-10 w-full mt-2 bg-white border-2 border-gray-200 rounded-xl shadow-xl max-h-64 overflow-y-auto suggestions-dropdown">
+                <div className="absolute z-10 w-full mt-2 bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl shadow-xl max-h-64 overflow-y-auto suggestions-dropdown">
                   {suggestions.map((suggestion, index) => (
                     <button
                       key={index}
@@ -778,7 +795,7 @@ function App() {
                       className="w-full text-left px-4 py-3 hover:bg-saffron-100 transition-colors border-b border-gray-100 last:border-b-0 flex items-center space-x-2 cursor-pointer"
                     >
                       <Search className="h-4 w-4 text-gray-400" />
-                      <span className="text-gray-700 font-medium">{suggestion}</span>
+                      <span className="text-gray-700 dark:text-gray-200 font-medium">{suggestion}</span>
                     </button>
                   ))}
                 </div>
@@ -890,10 +907,21 @@ function App() {
         )}
 
         {/* Loading State */}
-        {isLoading && recipes.length === 0 && (
-          <div className="text-center py-12">
-            <Loader2 className="h-12 w-12 text-saffron-600 mx-auto mb-4 animate-spin" />
-            <p className="text-gray-600 text-lg">Finding delicious recipes...</p>
+        {isLoading && (
+          <div>
+            <h3 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">Finding recipes…</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="bg-white dark:bg-gray-900 rounded-xl shadow-lg overflow-hidden">
+                  <div className="h-48 bg-gray-100 dark:bg-gray-800 animate-pulse" />
+                  <div className="p-5 space-y-3">
+                    <div className="h-5 w-3/4 bg-gray-100 dark:bg-gray-800 rounded animate-pulse" />
+                    <div className="h-4 w-1/2 bg-gray-100 dark:bg-gray-800 rounded animate-pulse" />
+                    <div className="h-4 w-1/3 bg-gray-100 dark:bg-gray-800 rounded animate-pulse" />
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </main>
