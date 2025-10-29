@@ -578,60 +578,60 @@ function App() {
             </div>
             
             {/* Navigation Tabs */}
-            <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
-            <div className="inline-flex space-x-2 bg-gray-100 p-1 rounded-xl min-w-full sm:min-w-0">
+            <div className="-mx-4 sm:mx-0 px-4 sm:px-0">
+            <div className="grid grid-cols-4 gap-1 sm:inline-flex sm:space-x-2 bg-gray-100 p-1 rounded-xl w-full">
               <button
                 onClick={() => {
                   setViewMode('search');
                   setRecipes([]);
                   setSearchQuery('');
                 }}
-                className={`flex items-center space-x-2 px-3 sm:px-4 py-2 rounded-lg transition-all whitespace-nowrap flex-1 sm:flex-none ${
+                className={`flex flex-col items-center justify-center space-y-1 text-xs sm:text-base px-2 py-2 sm:flex-row sm:space-y-0 sm:space-x-2 sm:px-4 sm:py-2 rounded-lg transition-all flex-1 sm:flex-none ${
                   viewMode === 'search'
                     ? 'bg-white shadow-md text-saffron-700 font-semibold'
                     : 'text-gray-600 hover:text-gray-800'
                 }`}
               >
-                <Home className="h-5 w-5" />
-                <span>Search</span>
+                <Home className="h-4 w-4 sm:h-5 sm:w-5" />
+                <span className="leading-none">Search</span>
               </button>
               <button
                 onClick={loadFavorites}
-                className={`flex items-center space-x-2 px-3 sm:px-4 py-2 rounded-lg transition-all whitespace-nowrap flex-1 sm:flex-none ${
+                className={`flex flex-col items-center justify-center space-y-1 text-xs sm:text-base px-2 py-2 sm:flex-row sm:space-y-0 sm:space-x-2 sm:px-4 sm:py-2 rounded-lg transition-all flex-1 sm:flex-none ${
                   viewMode === 'favorites'
                     ? 'bg-white shadow-md text-saffron-700 font-semibold'
                     : 'text-gray-600 hover:text-gray-800'
                 }`}
               >
-                <HeartIcon className="h-5 w-5" />
-                <span>Favorites</span>
+                <HeartIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+                <span className="leading-none">Favorites</span>
                 {favoritesCount > 0 && (
-                  <span className="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full">
+                  <span className="bg-orange-500 text-white text-[10px] sm:text-xs px-1.5 py-0.5 rounded-full">
                     {favoritesCount}
                   </span>
                 )}
               </button>
               <button
                 onClick={() => setViewMode('planner')}
-                className={`flex items-center space-x-2 px-3 sm:px-4 py-2 rounded-lg transition-all whitespace-nowrap flex-1 sm:flex-none ${
+                className={`flex flex-col items-center justify-center space-y-1 text-xs sm:text-base px-2 py-2 sm:flex-row sm:space-y-0 sm:space-x-2 sm:px-4 sm:py-2 rounded-lg transition-all flex-1 sm:flex-none ${
                   viewMode === 'planner'
                     ? 'bg-white shadow-md text-saffron-700 font-semibold'
                     : 'text-gray-600 hover:text-gray-800'
                 }`}
               >
-                <CalendarDays className="h-5 w-5" />
-                <span>Planner</span>
+                <CalendarDays className="h-4 w-4 sm:h-5 sm:w-5" />
+                <span className="leading-none">Planner</span>
               </button>
               <button
                 onClick={() => setViewMode('shopping')}
-                className={`flex items-center space-x-2 px-3 sm:px-4 py-2 rounded-lg transition-all whitespace-nowrap flex-1 sm:flex-none ${
+                className={`flex flex-col items-center justify-center space-y-1 text-xs sm:text-base px-2 py-2 sm:flex-row sm:space-y-0 sm:space-x-2 sm:px-4 sm:py-2 rounded-lg transition-all flex-1 sm:flex-none ${
                   viewMode === 'shopping'
                     ? 'bg-white shadow-md text-saffron-700 font-semibold'
                     : 'text-gray-600 hover:text-gray-800'
                 }`}
               >
-                <ListChecks className="h-5 w-5" />
-                <span>Shopping</span>
+                <ListChecks className="h-4 w-4 sm:h-5 sm:w-5" />
+                <span className="leading-none">Shopping</span>
               </button>
             </div>
           </div>
