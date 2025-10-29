@@ -121,6 +121,60 @@ function App() {
         'Add more oil, then rice; stir-fry on high heat.',
         'Return eggs, season with salt/soy; mix and serve.'
       ].join('\n');
+    } else if (lowerIdea.includes('okra') || lowerIdea.includes('bhindi')) {
+      if (!userIngs.some(i => i.includes('okra') || i.includes('bhindi') || i.includes('ladies finger'))) addIng('okra (bhindi)', '200 g');
+      addIng('oil', '1 tbsp');
+      addIng('turmeric (optional)', '1/4 tsp');
+      base.strInstructions = [
+        'Slice okra, pat dry.',
+        'Heat oil, add okra and sauté on medium-high until non-sticky and lightly crisp.',
+        'Season with salt, pepper, and turmeric (optional).'
+      ].join('\n');
+    } else if (lowerIdea.includes('eggplant') || lowerIdea.includes('brinjal') || lowerIdea.includes('aubergine')) {
+      if (!userIngs.some(i => i.includes('eggplant') || i.includes('brinjal'))) addIng('eggplant (brinjal)', '1 medium');
+      addIng('oil', '1-2 tbsp');
+      base.strInstructions = [
+        'Cut eggplant into cubes/slices.',
+        'Heat oil and sauté eggplant until soft and browned.',
+        'Season with salt and pepper; optional: add a chopped tomato and cook 3 more minutes.'
+      ].join('\n');
+    } else if (lowerIdea.includes('onion & tomato')) {
+      if (!userIngs.some(i => i.includes('onion'))) addIng('onion', '1 medium, sliced');
+      if (!userIngs.some(i => i.includes('tomato'))) addIng('tomato', '1 medium, chopped');
+      addIng('oil', '1 tbsp');
+      base.strInstructions = [
+        'Heat oil, sauté onions until translucent.',
+        'Add tomatoes, cook until soft and saucy.',
+        'Season with salt and pepper; serve as a quick stir-fry.'
+      ].join('\n');
+    } else if (lowerIdea.includes('rajma')) {
+      if (!userIngs.some(i => i.includes('rajma') || i.includes('kidney beans'))) addIng('cooked rajma (kidney beans)', '1 cup');
+      if (!userIngs.some(i => i.includes('tomato'))) addIng('tomato puree', '1/2 cup');
+      addIng('oil', '1 tbsp');
+      addIng('cumin (optional)', '1/2 tsp');
+      base.strInstructions = [
+        'Heat oil, optionally splutter cumin.',
+        'Add tomato puree, cook 3-5 minutes.',
+        'Add cooked rajma, salt, pepper; simmer 5 minutes and serve.'
+      ].join('\n');
+    } else if (lowerIdea.includes('beans & tomato') || lowerIdea.includes('beans stir-fry')) {
+      if (!userIngs.some(i => i.includes('beans'))) addIng('green beans', '200 g, chopped');
+      addIng('oil', '1 tbsp');
+      if (!userIngs.some(i => i.includes('tomato'))) addIng('tomato', '1 small, chopped');
+      base.strInstructions = [
+        'Heat oil, add beans and stir-fry 4-6 minutes.',
+        'Add chopped tomato and cook 2 minutes more.',
+        'Season with salt and pepper.'
+      ].join('\n');
+    } else if (lowerIdea.includes('chili omelet') || lowerIdea.includes('chilli omelet')) {
+      if (!userIngs.some(i => i.includes('egg'))) addIng('eggs', '2-3');
+      addIng('green chili (finely chopped)', '1');
+      addIng('oil', '1 tbsp');
+      base.strInstructions = [
+        'Beat eggs with salt and pepper; add chopped chili.',
+        'Heat oil in a pan; pour mixture and cook until set on both sides.',
+        'Serve hot.'
+      ].join('\n');
     } else {
       // Generic fallback
       addIng('oil or butter', '1 tbsp');
@@ -139,6 +193,13 @@ function App() {
         'tomato pasta': ['tomato pasta', 'pasta pomodoro', 'arrabiata', 'marinara'],
         'egg & tomato scramble': ['egg tomato scramble', 'shakshuka', 'scrambled eggs tomato'],
         'egg fried rice': ['egg fried rice', 'fried rice egg'],
+        'okra stir-fry': ['okra fry', 'bhindi fry', 'okra stir fry', 'bhindi masala minimal'],
+        'okra & onion stir-fry': ['bhindi onion', 'okra onion stir fry', 'bhindi fry'],
+        'eggplant stir-fry': ['brinjal fry', 'eggplant fry', 'brinjal stir fry'],
+        'eggplant & tomato sauté': ['brinjal tomato', 'eggplant tomato stir fry'],
+        'onion & tomato stir-fry': ['onion tomato fry', 'onion tomato stir fry'],
+        'quick rajma masala': ['rajma', 'kidney beans curry', 'rajma masala'],
+        'beans & tomato stir-fry': ['beans poriyal', 'beans tomato stir fry']
       };
       const terms = [idea, idea.toLowerCase(), ...(synonyms[idea.toLowerCase()] || [])];
       const match = await tryIdeaSearch(terms);
@@ -194,6 +255,12 @@ function App() {
             if (i.includes('tomato')) ideas.push('Tomato salad', 'Tomato soup', 'Tomato bruschetta');
             if (i.includes('banana')) ideas.push('Banana slices with honey', 'Pan-seared banana');
             if (i.includes('oats')) ideas.push('Plain oatmeal', 'Toasted oats');
+            if (i.includes('onion')) ideas.push('Caramelized onions', 'Onion omelet');
+            if (i.includes('chili') || i.includes('chilli') || i.includes('green chili')) ideas.push('Chili omelet');
+            if (i.includes('brinjal') || i.includes('eggplant') || i.includes('aubergine')) ideas.push('Eggplant stir-fry');
+            if (i.includes('ladies finger') || i.includes('ladyfinger') || i.includes('okra') || i.includes('bhindi')) ideas.push('Okra stir-fry');
+            if (i.includes('beans')) ideas.push('Beans stir-fry');
+            if (i.includes('rajma') || i.includes('kidney beans')) ideas.push('Quick rajma (with pre-cooked rajma)');
           }
           if (lower.length === 2) {
             const [a, b] = lower;
@@ -207,6 +274,12 @@ function App() {
             if (has('banana') && has('oats')) ideas.push('Banana oats porridge');
             if (has('bread') && has('tomato')) ideas.push('Tomato bruschetta');
             if (has('bread') && has('potato')) ideas.push('Potato sandwich (minimal)');
+            if (has('onion') && has('tomato')) ideas.push('Onion & tomato stir-fry');
+            if ((has('okra') || has('ladies finger') || has('bhindi')) && has('onion')) ideas.push('Okra & onion stir-fry');
+            if ((has('brinjal') || has('eggplant') || has('aubergine')) && has('tomato')) ideas.push('Eggplant & tomato sauté');
+            if ((has('rajma') || has('kidney beans')) && has('tomato')) ideas.push('Quick rajma masala');
+            if (has('beans') && has('tomato')) ideas.push('Beans & tomato stir-fry');
+            if (has('egg') && (has('chili') || has('chilli'))) ideas.push('Chili omelet');
           }
           const uniqueIdeas = Array.from(new Set(ideas)).slice(0, 8);
           if (uniqueIdeas.length > 0) setSimpleIdeas(uniqueIdeas);
