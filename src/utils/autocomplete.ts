@@ -79,7 +79,13 @@ export function getSuggestions(
   input: string,
   filterType: 'ingredients' | 'mood' | 'time'
 ): string[] {
-  const normalized = input.toLowerCase().trim();
+  // For ingredients, suggest based on the last token after a comma
+  const normalized = (() => {
+    if (filterType !== 'ingredients') return input.toLowerCase().trim();
+    const parts = input.split(',');
+    const last = parts[parts.length - 1] ?? '';
+    return last.toLowerCase().trim();
+  })();
   
   if (normalized.length < 1) return [];
   

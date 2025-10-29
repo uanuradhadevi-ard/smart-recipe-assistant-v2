@@ -508,19 +508,32 @@ function App() {
     
     // If there's already text in search box, append the new suggestion
     if (filterType === 'ingredients') {
-      if (searchQuery.trim().length > 0 && !searchQuery.includes(suggestion)) {
-        // Append with comma if not already in the list
-        const currentIngredients = searchQuery.split(',').map(i => i.trim());
-        if (!currentIngredients.includes(suggestion)) {
-          setSearchQuery(searchQuery + ', ' + suggestion);
-          setShowSuggestions(false);
-          return; // Don't search yet, let them add more
+      const parts = searchQuery.split(',');
+      const trimmedParts = parts.map(p => p.trim()).filter(Boolean);
+      const lastIndex = parts.length - 1;
+      const existing = new Set(trimmedParts.map(p => p.toLowerCase()));
+
+      if (parts.length > 0) {
+        const beforeLast = parts.slice(0, lastIndex).map(p => p.trim()).filter(Boolean);
+        const lastToken = (parts[lastIndex] ?? '').trim();
+        const lowerSuggestion = suggestion.toLowerCase();
+
+        if (!existing.has(lowerSuggestion)) {
+          if (lastToken && !existing.has(lastToken.toLowerCase())) {
+            // Replace last partial token
+            const newQuery = [...beforeLast, suggestion].join(', ');
+            setSearchQuery(newQuery);
+          } else {
+            // Append new ingredient
+            const newQuery = [...trimmedParts, suggestion].join(', ');
+            setSearchQuery(newQuery);
+          }
         }
       } else {
-        // First ingredient or same ingredient - just set it
         setSearchQuery(suggestion);
-        setShowSuggestions(false);
       }
+      setShowSuggestions(false);
+      return; // Don't search yet, let them add more
     } else {
       // For mood and time, replace the query
       setSearchQuery(suggestion);
