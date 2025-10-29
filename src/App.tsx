@@ -572,8 +572,8 @@ function App() {
                 <ChefHat className="h-8 w-8 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Smart Recipe Assistant</h1>
-                <p className="text-xs sm:text-sm text-gray-600">Find your perfect recipe, tailored to you</p>
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Tasty Thoughts</h1>
+                <p className="text-xs sm:text-sm text-gray-600">Culinary ideas with what you already have</p>
               </div>
             </div>
             

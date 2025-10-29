@@ -1,4 +1,4 @@
-# Smart Recipe Assistant
+# Tasty Thoughts
 
 A beautiful, production-ready recipe finder application built for busy professionals who want to cook based on ingredients they have, their mood, or time available.
 
