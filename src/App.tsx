@@ -508,6 +508,17 @@ function App() {
     }
   };
 
+  const removeIngredient = (ing: string) => {
+    const parts = parseIngredients(searchQuery).filter(p => p.toLowerCase() !== ing.toLowerCase());
+    setSearchQuery(parts.join(', '));
+  };
+
+  const clearAllIngredients = () => {
+    setSearchQuery('');
+    setSimpleIdeas([]);
+    setSuggestions([]);
+  };
+
   const handleSuggestionClick = (suggestion: string, e?: React.MouseEvent) => {
     e?.preventDefault();
     e?.stopPropagation();
@@ -776,6 +787,34 @@ function App() {
                 }
                 className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-saffron-500 focus:outline-none text-lg bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100"
               />
+
+              {/* Selected ingredient chips */}
+              {filterType === 'ingredients' && parseIngredients(searchQuery).length > 0 && (
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {parseIngredients(searchQuery).map((ing) => (
+                    <span key={ing} className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-saffron-200 text-saffron-900">
+                      {ing}
+                      <button
+                        type="button"
+                        className="ml-1 text-saffron-900/80 hover:text-saffron-900"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => removeIngredient(ing)}
+                        aria-label={`Remove ${ing}`}
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                  <button
+                    type="button"
+                    className="text-xs underline text-gray-600 dark:text-gray-300"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={clearAllIngredients}
+                  >
+                    Clear all
+                  </button>
+                </div>
+              )}
               
               {/* Autocomplete Dropdown */}
               {showSuggestions && suggestions.length > 0 && (
