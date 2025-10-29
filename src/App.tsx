@@ -29,10 +29,34 @@ function App() {
   const [filterType, setFilterType] = useState<FilterType>('ingredients');
   const [viewMode, setViewMode] = useState<ViewMode>('search');
   const [favoritesCount, setFavoritesCount] = useState(0);
+  const [simpleIdeas, setSimpleIdeas] = useState<string[]>([]);
+  const [onlyMyIngredients, setOnlyMyIngredients] = useState<boolean>(false);
 
   const [error, setError] = useState<string | null>(null);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
+  const handleQuickIdeaClick = async (idea: string) => {
+    setIsLoading(true);
+    try {
+      // Search by idea name and open the first matching recipe
+      const matches = await searchByName(idea);
+      if (matches && matches.length > 0) {
+        const details = await getRecipeById(matches[0].idMeal);
+        if (details) {
+          setSelectedRecipe(details);
+          return;
+        }
+      }
+      setError(`Couldn't find a full recipe for: ${idea}`);
+      setTimeout(() => setError(null), 4000);
+    } catch (e) {
+      setError('Failed to load recipe. Please try again.');
+      setTimeout(() => setError(null), 4000);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
 
   const performSearch = async (query: string) => {
     if (!query.trim()) {
@@ -45,6 +69,7 @@ function App() {
 
     setIsLoading(true);
     setRecipes([]); // Clear previous results
+    setSimpleIdeas([]);
     
     try {
       let results: Recipe[] = [];
@@ -53,6 +78,36 @@ function App() {
       if (filterType === 'ingredients') {
         // Parse multiple ingredients
         const ingredients = parseIngredients(query);
+        // Provide simple ideas when user has 1–2 ingredients
+        if (ingredients.length > 0 && ingredients.length <= 2) {
+          const lower = ingredients.map(i => i.toLowerCase());
+          const ideas: string[] = [];
+          if (lower.length === 1) {
+            const i = lower[0];
+            if (i.includes('egg')) ideas.push('Boiled eggs', 'Scrambled eggs', 'Egg omelet', 'Sunny-side up');
+            if (i.includes('potato')) ideas.push('Boiled potatoes', 'Pan-fried potatoes', 'Mashed potatoes');
+            if (i.includes('bread')) ideas.push('Toast', 'Garlic bread', 'Bread croutons');
+            if (i.includes('rice')) ideas.push('Plain rice', 'Crispy rice', 'Congee (plain)');
+            if (i.includes('tomato')) ideas.push('Tomato salad', 'Tomato soup', 'Tomato bruschetta');
+            if (i.includes('banana')) ideas.push('Banana slices with honey', 'Pan-seared banana');
+            if (i.includes('oats')) ideas.push('Plain oatmeal', 'Toasted oats');
+          }
+          if (lower.length === 2) {
+            const [a, b] = lower;
+            const has = (s: string) => a.includes(s) || b.includes(s);
+            if (has('egg') && has('bread')) ideas.push('Egg toast', 'French toast');
+            if (has('egg') && has('potato')) ideas.push('Spanish-style egg & potato omelet');
+            if (has('egg') && has('tomato')) ideas.push('Egg & tomato scramble', 'Shakshuka (minimal)');
+            if (has('pasta') && has('tomato')) ideas.push('Tomato pasta');
+            if (has('rice') && has('egg')) ideas.push('Simple egg fried rice');
+            if (has('rice') && has('tomato')) ideas.push('Tomato rice');
+            if (has('banana') && has('oats')) ideas.push('Banana oats porridge');
+            if (has('bread') && has('tomato')) ideas.push('Tomato bruschetta');
+            if (has('bread') && has('potato')) ideas.push('Potato sandwich (minimal)');
+          }
+          const uniqueIdeas = Array.from(new Set(ideas)).slice(0, 8);
+          if (uniqueIdeas.length > 0) setSimpleIdeas(uniqueIdeas);
+        }
         
         if (ingredients.length > 1) {
           // Multiple ingredients - search for first ingredient and filter results
@@ -71,21 +126,30 @@ function App() {
             })
           );
           
-          // Filter recipes that contain ALL specified ingredients
-          results = results.filter(r => {
+          // First try STRICT subset: all recipe ingredients are within provided ingredients
+          const provided = ingredients.map(i => i.toLowerCase());
+          const strict = (results.filter(r => {
             if (!r) return false;
             const recipeIngredients = r.ingredients.map(ing => ing.ingredient.toLowerCase());
-            
-            return ingredients.every(searchIng => {
-              const searchLower = searchIng.toLowerCase();
-              return recipeIngredients.some(ri => 
-                ri.includes(searchLower) || searchLower.includes(ri)
-              );
-            });
-          }).map(r => {
-            const { ingredients: _, ...rest } = r!;
-            return rest;
-          });
+            return recipeIngredients.every(ri => provided.some(pi => pi.includes(ri) || ri.includes(pi)));
+          }) as RecipeDetail[]).map(r => { const { ingredients: _ignore, ...rest } = r; return rest; });
+
+          if (onlyMyIngredients) {
+            results = strict;
+          } else if (strict.length > 0) {
+            results = strict;
+          } else {
+            // Fallback: recipes that contain ALL specified ingredients (may include extras)
+            const relaxed = (results.filter(r => {
+              if (!r) return false;
+              const recipeIngredients = r.ingredients.map(ing => ing.ingredient.toLowerCase());
+              return ingredients.every(searchIng => {
+                const searchLower = searchIng.toLowerCase();
+                return recipeIngredients.some(ri => ri.includes(searchLower) || searchLower.includes(ri));
+              });
+            }) as RecipeDetail[]).map(r => { const { ingredients: _ignore, ...rest } = r; return rest; });
+            results = relaxed;
+          }
           
           console.log(`Found ${results.length} recipes matching all ingredients`);
         } else {
@@ -130,8 +194,10 @@ function App() {
         });
       } else if (filterType === 'time') {
         // Time-based search
-        const maxTime = parseTimeInput(query);
-        console.log('Time filter: max', maxTime, 'minutes');
+        let maxTime = parseTimeInput(query);
+        // Cap time at 60 minutes to improve availability
+        if (!maxTime || maxTime > 60) maxTime = 60;
+        console.log('Time filter: max', maxTime, 'minutes (capped at 60)');
         
         // If we have a time limit, search by categories that are typically quick
         if (maxTime && maxTime <= 30) {
@@ -460,6 +526,20 @@ function App() {
             ))}
           </div>
 
+          {/* Ingredient options */}
+          {filterType === 'ingredients' && (
+            <div className="flex items-center gap-3 mb-6">
+              <label className="flex items-center gap-2 text-sm text-gray-700">
+                <input
+                  type="checkbox"
+                  checked={onlyMyIngredients}
+                  onChange={e => setOnlyMyIngredients(e.target.checked)}
+                />
+                Only show recipes using my ingredients
+              </label>
+            </div>
+          )}
+
           {/* Search Input */}
           <div className="flex space-x-4">
             <div className="flex-1 relative">
@@ -553,6 +633,26 @@ function App() {
               </button>
             ))}
           </div>
+          </div>
+        )}
+
+        {/* Simple Ideas for 1–2 ingredients */}
+        {simpleIdeas.length > 0 && (
+          <div className="bg-white rounded-2xl shadow-xl p-6 mb-8">
+            <h3 className="text-xl font-bold text-gray-800 mb-3">Quick ideas with what you have</h3>
+            <p className="text-gray-600 mb-4">These can be made using only your listed ingredients:</p>
+            <div className="flex flex-wrap gap-2">
+              {simpleIdeas.map((idea, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => handleQuickIdeaClick(idea)}
+                  className="px-3 py-1 bg-saffron-200 text-saffron-800 rounded-full text-sm font-medium hover:bg-saffron-300 transition-colors"
+                >
+                  {idea}
+                </button>
+              ))}
+            </div>
           </div>
         )}
 
