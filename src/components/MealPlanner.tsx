@@ -67,18 +67,18 @@ export default function MealPlanner({ onAddToShoppingList }: MealPlannerProps) {
     <div className="bg-white rounded-2xl shadow-xl p-6">
       <div className="flex items-center justify-between mb-6">
       <div className="flex items-center space-x-3">
-          <div className="p-2 bg-primary-100 rounded-lg">
-            <CalendarDays className="h-6 w-6 text-primary-700" />
+          <div className="p-2 bg-accent-100 rounded-lg">
+            <CalendarDays className="h-6 w-6 text-accent-700" />
           </div>
           <h2 className="text-xl font-bold text-gray-800">Weekly Meal Planner</h2>
         </div>
         <div className="flex gap-2">
-          <button onClick={() => setCurrent(d => { const nd = new Date(d); nd.setDate(d.getDate() - 7); return startOfWeek(nd); })} className="px-3 py-2 rounded-lg bg-gray-100 hover:bg-primary-100 hover:text-primary-700 transition-colors flex items-center gap-1">
+          <button onClick={() => setCurrent(d => { const nd = new Date(d); nd.setDate(d.getDate() - 7); return startOfWeek(nd); })} className="px-3 py-2 rounded-lg bg-primary-200 hover:bg-accent-200 hover:text-accent-800 transition-colors flex items-center gap-1">
             <ChevronLeft className="h-4 w-4" />
             Prev
           </button>
-          <button onClick={() => setCurrent(startOfWeek(new Date()))} className="px-4 py-2 rounded-lg bg-primary-100 text-primary-700 font-medium hover:bg-primary-200 transition-colors">Today</button>
-          <button onClick={() => setCurrent(d => { const nd = new Date(d); nd.setDate(d.getDate() + 7); return startOfWeek(nd); })} className="px-3 py-2 rounded-lg bg-gray-100 hover:bg-primary-100 hover:text-primary-700 transition-colors flex items-center gap-1">
+          <button onClick={() => setCurrent(startOfWeek(new Date()))} className="px-4 py-2 rounded-lg bg-accent-500 text-white font-medium hover:bg-accent-600 transition-colors">Today</button>
+          <button onClick={() => setCurrent(d => { const nd = new Date(d); nd.setDate(d.getDate() + 7); return startOfWeek(nd); })} className="px-3 py-2 rounded-lg bg-primary-200 hover:bg-accent-200 hover:text-accent-800 transition-colors flex items-center gap-1">
             Next
             <ChevronRight className="h-4 w-4" />
           </button>
@@ -102,7 +102,7 @@ export default function MealPlanner({ onAddToShoppingList }: MealPlannerProps) {
                     <div key={key} className="">
                       <div className="text-xs uppercase tracking-wide text-gray-500 mb-1">{slot}</div>
                       {planned ? (
-                        <div className="flex items-center justify-between bg-primary-50 border border-primary-200 rounded-lg p-2">
+                        <div className="flex items-center justify-between bg-accent-50 border border-accent-300 rounded-lg p-2">
                           <div className="flex items-center gap-3">
                             {planned.recipeThumb && (
                               <img src={planned.recipeThumb} alt={planned.recipeName} className="h-8 w-8 rounded object-cover" />
@@ -139,9 +139,9 @@ export default function MealPlanner({ onAddToShoppingList }: MealPlannerProps) {
                                   setSuggestions(prev => ({ ...prev, [key]: [] }));
                                 }
                               }}
-                              className="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                              className="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500"
                             />
-                            <button onClick={() => addMeal(dateStr, slot)} className="px-3 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
+                            <button onClick={() => addMeal(dateStr, slot)} className="px-3 py-3 bg-accent-600 text-white rounded-lg hover:bg-accent-700 transition-colors">
                               <Plus className="h-4 w-4" />
                             </button>
                           </div>
@@ -156,7 +156,7 @@ export default function MealPlanner({ onAddToShoppingList }: MealPlannerProps) {
                                     setNewMeal(prev => ({ ...prev, [key]: { recipeId: s.idMeal, recipeName: s.strMeal, recipeThumb: s.strMealThumb } }));
                                     setOpenSuggestKey(null);
                                   }}
-                                  className="w-full flex items-center gap-3 px-3 py-2 hover:bg-primary-50 transition-colors text-left"
+                                  className="w-full flex items-center gap-3 px-3 py-2 hover:bg-accent-50 transition-colors text-left"
                                 >
                                   <img src={s.strMealThumb} alt={s.strMeal} className="h-8 w-8 rounded object-cover" />
                                   <span className="text-sm text-gray-800">{s.strMeal}</span>
@@ -194,7 +194,7 @@ export default function MealPlanner({ onAddToShoppingList }: MealPlannerProps) {
                 return (
                   <div key={`${i}-${slot}`} className="p-3 border-t">
                     {planned ? (
-                      <div className="flex items-center justify-between bg-primary-50 border border-primary-200 rounded-lg p-2">
+                      <div className="flex items-center justify-between bg-accent-50 border border-accent-300 rounded-lg p-2">
                         <div className="flex items-center gap-3">
                           {planned.recipeThumb && <img src={planned.recipeThumb} alt={planned.recipeName} className="h-8 w-8 rounded object-cover" />}
                           <div>
@@ -229,9 +229,9 @@ export default function MealPlanner({ onAddToShoppingList }: MealPlannerProps) {
                                 setSuggestions(prev => ({ ...prev, [key]: [] }));
                               }
                             }}
-                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500"
                           />
-                          <button onClick={() => addMeal(dateStr, slot)} className="p-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
+                          <button onClick={() => addMeal(dateStr, slot)} className="p-2 bg-accent-600 text-white rounded-lg hover:bg-accent-700 transition-colors">
                             <Plus className="h-4 w-4" />
                           </button>
                         </div>
@@ -246,7 +246,7 @@ export default function MealPlanner({ onAddToShoppingList }: MealPlannerProps) {
                                   setNewMeal(prev => ({ ...prev, [key]: { recipeId: s.idMeal, recipeName: s.strMeal, recipeThumb: s.strMealThumb } }));
                                   setOpenSuggestKey(null);
                                 }}
-                                className="w-full flex items-center gap-3 px-3 py-2 hover:bg-primary-50 transition-colors text-left"
+                                className="w-full flex items-center gap-3 px-3 py-2 hover:bg-accent-50 transition-colors text-left"
                               >
                                 <img src={s.strMealThumb} alt={s.strMeal} className="h-8 w-8 rounded object-cover" />
                                 <span className="text-sm text-gray-800">{s.strMeal}</span>

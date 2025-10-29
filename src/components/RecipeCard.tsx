@@ -20,7 +20,7 @@ export default function RecipeCard({ recipe, onClick }: RecipeCardProps) {
   return (
     <div
       onClick={onClick}
-      className="bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer transform transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl border border-gray-100 hover:border-primary-200"
+      className="bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer transform transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl border border-primary-400/30 hover:border-accent-400"
     >
       <div className="relative h-48 overflow-hidden">
         <img
@@ -30,7 +30,7 @@ export default function RecipeCard({ recipe, onClick }: RecipeCardProps) {
         />
         {recipe.strCategory && (
           <div className="absolute top-3 left-3">
-            <span className="inline-flex items-center gap-1 bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-semibold text-primary-700 shadow-md">
+            <span className="inline-flex items-center gap-1 bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-semibold text-accent-700 shadow-md">
               <Tag className="h-3 w-3" />
               {recipe.strCategory}
             </span>
@@ -58,8 +58,8 @@ export default function RecipeCard({ recipe, onClick }: RecipeCardProps) {
           </div>
         )}
         <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100">
-          <span className="text-sm font-medium text-primary-600">View Recipe</span>
-          <ChevronRight className="h-5 w-5 text-primary-600" />
+          <span className="text-sm font-medium text-accent-600">View Recipe</span>
+          <ChevronRight className="h-5 w-5 text-accent-600" />
         </div>
       </div>
     </div>

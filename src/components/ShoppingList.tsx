@@ -95,8 +95,8 @@ export default function ShoppingList({ weekDate = new Date() }: ShoppingListProp
     <div className="bg-white rounded-2xl shadow-xl p-6">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-primary-100 rounded-lg">
-            <ShoppingCart className="h-6 w-6 text-primary-700" />
+          <div className="p-2 bg-accent-100 rounded-lg">
+            <ShoppingCart className="h-6 w-6 text-accent-700" />
           </div>
           <h2 className="text-xl font-bold text-gray-800">Shopping List</h2>
         </div>
@@ -105,7 +105,7 @@ export default function ShoppingList({ weekDate = new Date() }: ShoppingListProp
             <input type="checkbox" checked={useStoreUnits} onChange={e => setUseStoreUnits(e.target.checked)} />
             Convert to store units (ämag/kg, ml/L)
           </label>
-          <button onClick={generateFromPlan} disabled={isGenerating} className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50">
+          <button onClick={generateFromPlan} disabled={isGenerating} className="px-4 py-2 bg-accent-600 text-white rounded-lg hover:bg-accent-700 transition-colors disabled:opacity-50">
             {isGenerating ? 'Generating…' : 'Generate from Planner'}
           </button>
         </div>
@@ -117,16 +117,16 @@ export default function ShoppingList({ weekDate = new Date() }: ShoppingListProp
           placeholder="Ingredient"
           value={newItem.ingredient}
           onChange={e => setNewItem(s => ({ ...s, ingredient: e.target.value }))}
-          className="flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+          className="flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500"
         />
         <input
           type="text"
           placeholder="Qty"
           value={newItem.quantity}
           onChange={e => setNewItem(s => ({ ...s, quantity: e.target.value }))}
-          className="w-28 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+          className="w-28 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500"
         />
-        <button onClick={addItem} className="p-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
+        <button onClick={addItem} className="p-2 bg-accent-600 text-white rounded-lg hover:bg-accent-700 transition-colors">
           <Plus className="h-5 w-5" />
         </button>
       </div>
@@ -137,8 +137,8 @@ export default function ShoppingList({ weekDate = new Date() }: ShoppingListProp
         <ul className="divide-y">
           {list.items.map(item => (
             <li key={item.id} className="py-3 flex items-center gap-3">
-              <button onClick={() => toggleChecked(item.id, !item.checked)} className={`p-2 rounded-lg border transition-all ${item.checked ? 'bg-primary-50 border-primary-300' : 'bg-white border-gray-300 hover:border-primary-200'}`}>
-                <CheckSquare className={`h-5 w-5 ${item.checked ? 'text-primary-600' : 'text-gray-400'}`} />
+              <button onClick={() => toggleChecked(item.id, !item.checked)} className={`p-2 rounded-lg border transition-all ${item.checked ? 'bg-accent-50 border-accent-300' : 'bg-white border-gray-300 hover:border-accent-200'}`}>
+                <CheckSquare className={`h-5 w-5 ${item.checked ? 'text-accent-600' : 'text-gray-400'}`} />
               </button>
               <input
                 value={item.ingredient}
