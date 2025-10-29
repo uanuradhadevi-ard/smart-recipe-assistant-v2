@@ -35,20 +35,123 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
+  const tryIdeaSearch = async (terms: string[]) => {
+    for (const t of terms) {
+      const matches = await searchByName(t);
+      if (matches && matches.length > 0) return matches[0];
+    }
+    return null;
+  };
+
+  const buildFallbackRecipe = (idea: string): RecipeDetail => {
+    const userIngs = parseIngredients(searchQuery).map(i => i.trim()).filter(Boolean);
+    const lowerIdea = idea.toLowerCase();
+    const staples = ['salt', 'pepper'];
+    const base: RecipeDetail = {
+      idMeal: `local-idea-${Date.now()}`,
+      strMeal: idea,
+      strMealThumb: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=800&auto=format&fit=crop',
+      strCategory: 'Quick Idea',
+      strArea: 'Generic',
+      strInstructions: '',
+      strTags: 'quick,simple,minimal',
+      strYoutube: '',
+      strSource: '',
+      ingredients: [],
+    };
+
+    const addIng = (ingredient: string, measure: string) => {
+      base.ingredients.push({ ingredient, measure });
+    };
+
+    // Default: include user's listed ingredients
+    userIngs.forEach(i => addIng(i, 'as needed'));
+    staples.forEach(s => { if (!userIngs.some(i => i.toLowerCase().includes(s))) addIng(s, 'to taste'); });
+
+    if (lowerIdea.includes('egg toast') || lowerIdea.includes('egg') && lowerIdea.includes('toast')) {
+      if (!userIngs.some(i => i.includes('egg'))) addIng('egg', '1-2');
+      if (!userIngs.some(i => i.includes('bread'))) addIng('bread slices', '2');
+      addIng('butter or oil', '1 tbsp');
+      base.strInstructions = [
+        'Beat eggs with a pinch of salt and pepper in a bowl.',
+        'Heat a pan on medium, add butter or oil.',
+        'Dip bread slices in the egg mixture to coat both sides.',
+        'Place on the pan and cook 2-3 minutes per side until golden.',
+        'Serve hot. Optional: add herbs, chili flakes, or cheese.'
+      ].join('\n');
+    } else if (lowerIdea.includes('french toast')) {
+      if (!userIngs.some(i => i.includes('egg'))) addIng('egg', '2');
+      if (!userIngs.some(i => i.includes('milk'))) addIng('milk', '1/3 cup');
+      if (!userIngs.some(i => i.includes('bread'))) addIng('bread slices', '2-3');
+      addIng('sugar', '1 tbsp');
+      addIng('cinnamon (optional)', '1/4 tsp');
+      addIng('butter', '1 tbsp');
+      base.strInstructions = [
+        'Whisk eggs, milk, sugar, and cinnamon.',
+        'Heat butter on a pan over medium heat.',
+        'Dip bread in the mixture and cook 2-3 minutes per side.',
+        'Serve with honey, syrup, or fruit.'
+      ].join('\n');
+    } else if (lowerIdea.includes('egg & tomato') || lowerIdea.includes('scramble')) {
+      if (!userIngs.some(i => i.includes('egg'))) addIng('eggs', '2-3');
+      if (!userIngs.some(i => i.includes('tomato'))) addIng('tomato', '1 medium, diced');
+      addIng('oil', '1 tbsp');
+      base.strInstructions = [
+        'Heat oil in a pan. Add diced tomato and cook 2 minutes.',
+        'Beat eggs with salt and pepper. Pour into pan.',
+        'Stir gently until softly set. Serve warm.'
+      ].join('\n');
+    } else if (lowerIdea.includes('tomato pasta')) {
+      if (!userIngs.some(i => i.includes('pasta'))) addIng('pasta', '150 g');
+      if (!userIngs.some(i => i.includes('tomato'))) addIng('tomato (or puree)', '2 medium or 1/2 cup');
+      addIng('garlic (optional)', '2 cloves');
+      addIng('oil', '1 tbsp');
+      base.strInstructions = [
+        'Boil pasta in salted water until al dente; reserve 1/4 cup water.',
+        'In a pan, sauté garlic in oil, add tomato and cook 5-7 minutes.',
+        'Toss pasta with sauce, adjust with reserved water, season and serve.'
+      ].join('\n');
+    } else if (lowerIdea.includes('egg fried rice')) {
+      if (!userIngs.some(i => i.includes('rice'))) addIng('cooked rice', '2 cups');
+      if (!userIngs.some(i => i.includes('egg'))) addIng('eggs', '2');
+      addIng('oil', '1 tbsp');
+      addIng('soy sauce (optional)', '1 tbsp');
+      base.strInstructions = [
+        'Scramble eggs in a little oil; remove and set aside.',
+        'Add more oil, then rice; stir-fry on high heat.',
+        'Return eggs, season with salt/soy; mix and serve.'
+      ].join('\n');
+    } else {
+      // Generic fallback
+      addIng('oil or butter', '1 tbsp');
+      base.strInstructions = 'Combine your listed ingredients with basic seasoning and cook on medium heat until done. Adjust salt and pepper to taste.';
+    }
+
+    return base;
+  };
+
   const handleQuickIdeaClick = async (idea: string) => {
     setIsLoading(true);
     try {
-      // Search by idea name and open the first matching recipe
-      const matches = await searchByName(idea);
-      if (matches && matches.length > 0) {
-        const details = await getRecipeById(matches[0].idMeal);
+      // Try multiple keywords for better matching
+      const synonyms: Record<string, string[]> = {
+        'egg toast': ['egg toast', 'eggs on toast', 'french toast', 'egg sandwich'],
+        'tomato pasta': ['tomato pasta', 'pasta pomodoro', 'arrabiata', 'marinara'],
+        'egg & tomato scramble': ['egg tomato scramble', 'shakshuka', 'scrambled eggs tomato'],
+        'egg fried rice': ['egg fried rice', 'fried rice egg'],
+      };
+      const terms = [idea, idea.toLowerCase(), ...(synonyms[idea.toLowerCase()] || [])];
+      const match = await tryIdeaSearch(terms);
+      if (match) {
+        const details = await getRecipeById(match.idMeal);
         if (details) {
           setSelectedRecipe(details);
           return;
         }
       }
-      setError(`Couldn't find a full recipe for: ${idea}`);
-      setTimeout(() => setError(null), 4000);
+      // Build and show a fallback recipe using user's ingredients
+      const fallback = buildFallbackRecipe(idea);
+      setSelectedRecipe(fallback);
     } catch (e) {
       setError('Failed to load recipe. Please try again.');
       setTimeout(() => setError(null), 4000);
