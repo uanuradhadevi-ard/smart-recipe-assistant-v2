@@ -95,7 +95,7 @@ export default function ShoppingList({ weekDate = new Date() }: ShoppingListProp
     <div className="bg-white rounded-2xl shadow-xl p-6">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
-          <ListChecks className="h-6 w-6 text-orange-600停产" />
+          <ListChecks className="h-6 w-6 text-saffron-700" />
           <h2 className="text-xl font-bold text-gray-800">Shopping List</h2>
         </div>
         <div className="flex items-center gap-3">
@@ -103,7 +103,7 @@ export default function ShoppingList({ weekDate = new Date() }: ShoppingListProp
             <input type="checkbox" checked={useStoreUnits} onChange={e => setUseStoreUnits(e.target.checked)} />
             Convert to store units (ämag/kg, ml/L)
           </label>
-          <button onClick={generateFromPlan} disabled={isGenerating} className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50">
+          <button onClick={generateFromPlan} disabled={isGenerating} className="px-4 py-2 bg-saffron-600 text-white rounded-lg hover:bg-saffron-700 disabled:opacity-50">
             {isGenerating ? 'Generating…' : 'Generate from Planner'}
           </button>
         </div>
@@ -115,16 +115,16 @@ export default function ShoppingList({ weekDate = new Date() }: ShoppingListProp
           placeholder="Ingredient"
           value={newItem.ingredient}
           onChange={e => setNewItem(s => ({ ...s, ingredient: e.target.value }))}
-          className="flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+          className="flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-saffron-500"
         />
         <input
           type="text"
           placeholder="Qty"
           value={newItem.quantity}
           onChange={e => setNewItem(s => ({ ...s, quantity: e.target.value }))}
-          className="w-28 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+          className="w-28 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-saffron-500"
         />
-        <button onClick={addItem} className="p-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700">
+        <button onClick={addItem} className="p-2 bg-saffron-600 text-white rounded-lg hover:bg-saffron-700">
           <Plus className="h-5 w-5" />
         </button>
       </div>

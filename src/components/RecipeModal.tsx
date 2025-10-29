@@ -62,12 +62,12 @@ export default function RecipeModal({ recipe, onClose }: RecipeModalProps) {
               </div>
             )}
             {recipe.estimatedCost && (
-              <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-4 rounded-xl border border-orange-200">
+              <div className="bg-gradient-to-br from-saffron-100 to-white p-4 rounded-xl border border-saffron-300">
                 <div className="flex items-center mb-2">
-                  <DollarSign className="h-5 w-5 text-orange-600 mr-2" />
-                  <span className="text-xs font-semibold text-orange-700 uppercase">Cost</span>
+                  <DollarSign className="h-5 w-5 text-saffron-700 mr-2" />
+                  <span className="text-xs font-semibold text-saffron-700 uppercase">Cost</span>
                 </div>
-                <div className="text-2xl font-bold text-orange-900">{recipe.estimatedCost}</div>
+                <div className="text-2xl font-bold text-saffron-800">{recipe.estimatedCost}</div>
               </div>
             )}
           </div>
@@ -76,7 +76,7 @@ export default function RecipeModal({ recipe, onClose }: RecipeModalProps) {
           <div className="flex flex-wrap gap-4 mb-6">
             {recipe.strCategory && (
               <div className="flex items-center text-sm text-gray-600">
-                <ChefHat className="h-4 w-4 mr-2 text-orange-500" />
+                <ChefHat className="h-4 w-4 mr-2 text-saffron-700" />
                 <span className="font-medium">{recipe.strCategory}</span>
               </div>
             )}
@@ -89,15 +89,15 @@ export default function RecipeModal({ recipe, onClose }: RecipeModalProps) {
 
           {/* Nutritional Information */}
           {recipe.nutritionalInfo && (
-            <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border border-orange-200 rounded-xl p-5 mb-6">
+            <div className="bg-gradient-to-r from-saffron-100 to-white border border-saffron-300 rounded-xl p-5 mb-6">
               <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                <Flame className="h-6 w-6 mr-2 text-orange-500" />
+                <Flame className="h-6 w-6 mr-2 text-saffron-700" />
                 Nutritional Information
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {recipe.nutritionalInfo.calories && (
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-orange-600">{recipe.nutritionalInfo.calories}</div>
+                    <div className="text-2xl font-bold text-saffron-700">{recipe.nutritionalInfo.calories}</div>
                     <div className="text-sm text-gray-600">Calories</div>
                   </div>
                 )}
@@ -126,7 +126,7 @@ export default function RecipeModal({ recipe, onClose }: RecipeModalProps) {
           {/* Ingredients */}
           <div className="mb-6">
             <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-              <span className="bg-orange-500 text-white rounded-full w-8 h-8 flex items-center justify-center mr-2">
+              <span className="bg-saffron-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-2">
                 {recipe.ingredients.length}
               </span>
               Ingredients
@@ -169,7 +169,7 @@ export default function RecipeModal({ recipe, onClose }: RecipeModalProps) {
           {/* Instructions */}
           <div className="mb-6">
             <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-              <Clock className="h-6 w-6 mr-2 text-orange-500" />
+              <Clock className="h-6 w-6 mr-2 text-saffron-700" />
               Instructions
             </h3>
             <div className="prose max-w-none">
@@ -187,7 +187,7 @@ export default function RecipeModal({ recipe, onClose }: RecipeModalProps) {
                 {recipe.strTags.split(',').map((tag, index) => (
                   <span
                     key={index}
-                    className="bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm"
+                    className="bg-saffron-200 text-saffron-800 px-3 py-1 rounded-full text-sm"
                   >
                     {tag.trim()}
                   </span>

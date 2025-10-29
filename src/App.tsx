@@ -307,9 +307,9 @@ function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-50">
+    <div className="min-h-screen bg-gradient-to-br from-saffron-100 via-white to-saffron-100">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-orange-100 sticky top-0 z-30">
+      <header className="bg-white shadow-sm border-b border-saffron-100 sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-2 sm:mb-4">
             <div className="flex items-center space-x-3">
@@ -333,7 +333,7 @@ function App() {
                 }}
                 className={`flex items-center space-x-2 px-3 sm:px-4 py-2 rounded-lg transition-all whitespace-nowrap flex-1 sm:flex-none ${
                   viewMode === 'search'
-                    ? 'bg-white shadow-md text-orange-600 font-semibold'
+                    ? 'bg-white shadow-md text-saffron-700 font-semibold'
                     : 'text-gray-600 hover:text-gray-800'
                 }`}
               >
@@ -344,7 +344,7 @@ function App() {
                 onClick={loadFavorites}
                 className={`flex items-center space-x-2 px-3 sm:px-4 py-2 rounded-lg transition-all whitespace-nowrap flex-1 sm:flex-none ${
                   viewMode === 'favorites'
-                    ? 'bg-white shadow-md text-orange-600 font-semibold'
+                    ? 'bg-white shadow-md text-saffron-700 font-semibold'
                     : 'text-gray-600 hover:text-gray-800'
                 }`}
               >
@@ -360,7 +360,7 @@ function App() {
                 onClick={() => setViewMode('planner')}
                 className={`flex items-center space-x-2 px-3 sm:px-4 py-2 rounded-lg transition-all whitespace-nowrap flex-1 sm:flex-none ${
                   viewMode === 'planner'
-                    ? 'bg-white shadow-md text-orange-600 font-semibold'
+                    ? 'bg-white shadow-md text-saffron-700 font-semibold'
                     : 'text-gray-600 hover:text-gray-800'
                 }`}
               >
@@ -371,7 +371,7 @@ function App() {
                 onClick={() => setViewMode('shopping')}
                 className={`flex items-center space-x-2 px-3 sm:px-4 py-2 rounded-lg transition-all whitespace-nowrap flex-1 sm:flex-none ${
                   viewMode === 'shopping'
-                    ? 'bg-white shadow-md text-orange-600 font-semibold'
+                    ? 'bg-white shadow-md text-saffron-700 font-semibold'
                     : 'text-gray-600 hover:text-gray-800'
                 }`}
               >
@@ -450,7 +450,7 @@ function App() {
                 }}
                 className={`flex items-center space-x-2 px-4 py-2 sm:px-6 sm:py-3 rounded-xl transition-all text-sm sm:text-base ${
                   filterType === type
-                    ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg scale-105'
+                    ? 'bg-gradient-to-r from-saffron-500 to-saffron-600 text-white shadow-lg scale-105'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
@@ -488,7 +488,7 @@ function App() {
                     ? 'What are you craving? (e.g., "spicy", "comfort food")'
                     : 'How much time do you have? (e.g., "quick", "30 minutes")'
                 }
-                className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none text-lg"
+                className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:border-saffron-500 focus:outline-none text-lg"
               />
               
               {/* Autocomplete Dropdown */}
@@ -506,7 +506,7 @@ function App() {
                         e.preventDefault();
                         handleSuggestionClick(suggestion, e);
                       }}
-                      className="w-full text-left px-4 py-3 hover:bg-orange-50 transition-colors border-b border-gray-100 last:border-b-0 flex items-center space-x-2 cursor-pointer"
+                      className="w-full text-left px-4 py-3 hover:bg-saffron-100 transition-colors border-b border-gray-100 last:border-b-0 flex items-center space-x-2 cursor-pointer"
                     >
                       <Search className="h-4 w-4 text-gray-400" />
                       <span className="text-gray-700 font-medium">{suggestion}</span>
@@ -518,7 +518,7 @@ function App() {
             <button
               onClick={handleSearch}
               disabled={isLoading}
-              className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-8 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+              className="bg-gradient-to-r from-saffron-500 to-saffron-600 text-white px-8 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
             >
               {isLoading ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
@@ -547,7 +547,7 @@ function App() {
                   // Use tag directly in the search
                   await performSearch(tag);
                 }}
-                className="px-4 py-2 bg-orange-100 text-orange-700 rounded-full text-sm font-medium hover:bg-orange-200 transition-colors"
+                className="px-4 py-2 bg-saffron-200 text-saffron-800 rounded-full text-sm font-medium hover:bg-saffron-300 transition-colors"
               >
                 {tag}
               </button>
@@ -603,7 +603,7 @@ function App() {
         {/* Loading State */}
         {isLoading && recipes.length === 0 && (
           <div className="text-center py-12">
-            <Loader2 className="h-12 w-12 text-orange-500 mx-auto mb-4 animate-spin" />
+            <Loader2 className="h-12 w-12 text-saffron-600 mx-auto mb-4 animate-spin" />
             <p className="text-gray-600 text-lg">Finding delicious recipes...</p>
           </div>
         )}

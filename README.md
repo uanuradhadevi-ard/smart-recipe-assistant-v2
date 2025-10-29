@@ -2,6 +2,8 @@
 
 A beautiful, production-ready recipe finder application built for busy professionals who want to cook based on ingredients they have, their mood, or time available.
 
+[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/uanuradhadevi-ard/smart-recipe-assistant-v2)
+
 ## Features
 
 - **Recipe Search**: Find recipes by ingredients, mood/cravings, or time available
@@ -13,7 +15,7 @@ A beautiful, production-ready recipe finder application built for busy professio
 
 ## Live Demo
 
-🌐 **[View Live Demo](https://your-username.github.io/smart-recipe-assistant)**
+🌐 **[Run on StackBlitz](https://stackblitz.com/github/uanuradhadevi-ard/smart-recipe-assistant-v2)**
 
 ## Tech Stack
 
@@ -21,7 +23,7 @@ A beautiful, production-ready recipe finder application built for busy professio
 - **Styling**: Tailwind CSS
 - **API**: TheMealDB API
 - **Storage**: localStorage for client-side persistence
-- **Deployment**: GitHub Pages
+- **Deployment**: StackBlitz (no auth or keys required)
 
 ## Getting Started
 
@@ -34,8 +36,8 @@ A beautiful, production-ready recipe finder application built for busy professio
 
 1. Clone the repository:
    ```bash
-git clone https://github.com/your-username/smart-recipe-assistant.git
-cd smart-recipe-assistant
+git clone https://github.com/uanuradhadevi-ard/smart-recipe-assistant-v2.git
+cd smart-recipe-assistant-v2
    ```
 
 2. Install dependencies:
@@ -47,6 +49,15 @@ cd smart-recipe-assistant
    ```bash
    npm run dev
    ```
+## Assignment Compliance
+
+- Framework: React (with TypeScript) via Vite
+- Styling: Tailwind CSS
+- Data Fetching: Public API (TheMealDB) with no authentication/registration
+- State Management: React state/hooks and localStorage (no external state libs)
+- Working Application: Deployed on StackBlitz — see Live Demo link above
+- Code Sharing: Public GitHub repo with README and notes
+
 
 4. Open [http://localhost:5173](http://localhost:5173) in your browser
 

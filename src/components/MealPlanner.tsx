@@ -66,8 +66,8 @@ export default function MealPlanner({ onAddToShoppingList }: MealPlannerProps) {
   return (
     <div className="bg-white rounded-2xl shadow-xl p-6">
       <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center space-x-2">
-          <CalendarDays className="h-6 w-6 text-orange-600" />
+      <div className="flex items-center space-x-2">
+          <CalendarDays className="h-6 w-6 text-saffron-700" />
           <h2 className="text-xl font-bold text-gray-800">Weekly Meal Planner</h2>
         </div>
         <div className="flex gap-2">
@@ -94,7 +94,7 @@ export default function MealPlanner({ onAddToShoppingList }: MealPlannerProps) {
                     <div key={key} className="">
                       <div className="text-xs uppercase tracking-wide text-gray-500 mb-1">{slot}</div>
                       {planned ? (
-                        <div className="flex items-center justify-between bg-orange-50 border border-orange-200 rounded-lg p-2">
+                        <div className="flex items-center justify-between bg-saffron-100 border border-saffron-300 rounded-lg p-2">
                           <div className="flex items-center gap-3">
                             {planned.recipeThumb && (
                               <img src={planned.recipeThumb} alt={planned.recipeName} className="h-8 w-8 rounded object-cover" />
@@ -131,9 +131,9 @@ export default function MealPlanner({ onAddToShoppingList }: MealPlannerProps) {
                                   setSuggestions(prev => ({ ...prev, [key]: [] }));
                                 }
                               }}
-                              className="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                              className="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-saffron-500"
                             />
-                            <button onClick={() => addMeal(dateStr, slot)} className="px-3 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700">
+                            <button onClick={() => addMeal(dateStr, slot)} className="px-3 py-3 bg-saffron-600 text-white rounded-lg hover:bg-saffron-700">
                               <Plus className="h-4 w-4" />
                             </button>
                           </div>
@@ -148,7 +148,7 @@ export default function MealPlanner({ onAddToShoppingList }: MealPlannerProps) {
                                     setNewMeal(prev => ({ ...prev, [key]: { recipeId: s.idMeal, recipeName: s.strMeal, recipeThumb: s.strMealThumb } }));
                                     setOpenSuggestKey(null);
                                   }}
-                                  className="w-full flex items-center gap-3 px-3 py-2 hover:bg-orange-50 text-left"
+                                  className="w-full flex items-center gap-3 px-3 py-2 hover:bg-saffron-100 text-left"
                                 >
                                   <img src={s.strMealThumb} alt={s.strMeal} className="h-8 w-8 rounded object-cover" />
                                   <span className="text-sm text-gray-800">{s.strMeal}</span>
@@ -186,7 +186,7 @@ export default function MealPlanner({ onAddToShoppingList }: MealPlannerProps) {
                 return (
                   <div key={`${i}-${slot}`} className="p-3 border-t">
                     {planned ? (
-                      <div className="flex items-center justify-between bg-orange-50 border border-orange-200 rounded-lg p-2">
+                      <div className="flex items-center justify-between bg-saffron-100 border border-saffron-300 rounded-lg p-2">
                         <div className="flex items-center gap-3">
                           {planned.recipeThumb && <img src={planned.recipeThumb} alt={planned.recipeName} className="h-8 w-8 rounded object-cover" />}
                           <div>
@@ -221,9 +221,9 @@ export default function MealPlanner({ onAddToShoppingList }: MealPlannerProps) {
                                 setSuggestions(prev => ({ ...prev, [key]: [] }));
                               }
                             }}
-                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-saffron-500"
                           />
-                          <button onClick={() => addMeal(dateStr, slot)} className="p-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700">
+                          <button onClick={() => addMeal(dateStr, slot)} className="p-2 bg-saffron-600 text-white rounded-lg hover:bg-saffron-700">
                             <Plus className="h-4 w-4" />
                           </button>
                         </div>
@@ -238,7 +238,7 @@ export default function MealPlanner({ onAddToShoppingList }: MealPlannerProps) {
                                   setNewMeal(prev => ({ ...prev, [key]: { recipeId: s.idMeal, recipeName: s.strMeal, recipeThumb: s.strMealThumb } }));
                                   setOpenSuggestKey(null);
                                 }}
-                                className="w-full flex items-center gap-3 px-3 py-2 hover:bg-orange-50 text-left"
+                                className="w-full flex items-center gap-3 px-3 py-2 hover:bg-saffron-100 text-left"
                               >
                                 <img src={s.strMealThumb} alt={s.strMeal} className="h-8 w-8 rounded object-cover" />
                                 <span className="text-sm text-gray-800">{s.strMeal}</span>

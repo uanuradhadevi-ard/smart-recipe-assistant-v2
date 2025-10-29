@@ -30,7 +30,7 @@ export default function RecipeCard({ recipe, onClick }: RecipeCardProps) {
         />
         {recipe.strCategory && (
           <div className="absolute top-3 left-3">
-            <span className="bg-white px-3 py-1 rounded-full text-xs font-semibold text-orange-600 shadow-md">
+            <span className="bg-white px-3 py-1 rounded-full text-xs font-semibold text-saffron-700 shadow-md">
               {recipe.strCategory}
             </span>
           </div>
@@ -61,7 +61,7 @@ export default function RecipeCard({ recipe, onClick }: RecipeCardProps) {
             <Clock className="h-4 w-4 mr-1" />
             <span>Recipe Details</span>
           </div>
-          <ChevronRight className="h-5 w-5 text-orange-500" />
+          <ChevronRight className="h-5 w-5 text-saffron-600" />
         </div>
       </div>
     </div>
