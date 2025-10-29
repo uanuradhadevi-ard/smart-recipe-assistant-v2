@@ -33,20 +33,20 @@ A beautiful, production-ready recipe finder application built for busy professio
 ### Installation
 
 1. Clone the repository:
-```bash
+   ```bash
 git clone https://github.com/your-username/smart-recipe-assistant.git
 cd smart-recipe-assistant
-```
+   ```
 
 2. Install dependencies:
-```bash
-npm install
-```
+   ```bash
+   npm install
+   ```
 
 3. Start the development server:
-```bash
-npm run dev
-```
+   ```bash
+   npm run dev
+   ```
 
 4. Open [http://localhost:5173](http://localhost:5173) in your browser
 
