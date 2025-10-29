@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, ChefHat, Sparkles, Clock, TrendingUp, Loader2, Heart as HeartIcon, Home, CalendarDays, ListChecks } from 'lucide-react';
+import { Search, ChefHat, Sparkles, Clock, TrendingUp, Loader2, Heart as HeartIcon, Home, CalendarDays, ListChecks, Utensils, Flame, Timer } from 'lucide-react';
 import { Recipe, RecipeDetail } from './types/recipe';
 import { searchByIngredient, searchByName, getRecipeById } from './services/mealDB';
 import RecipeCard from './components/RecipeCard';
@@ -579,13 +579,13 @@ function App() {
   }, []);
 
   return (
-    <div className={(dark ? 'dark ' : '') + 'min-h-screen bg-gradient-to-br from-saffron-100 via-white to-saffron-100 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900'}>
+    <div className={(dark ? 'dark ' : '') + 'min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900'}>
       {/* Header */}
-      <header className="bg-white dark:bg-gray-900 shadow-sm border-b border-saffron-100 dark:border-gray-800 sticky top-0 z-30">
+      <header className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm shadow-sm border-b border-primary-100 dark:border-gray-800 sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-2 sm:mb-4">
             <div className="flex items-center space-x-3">
-              <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-3 rounded-xl shadow-lg">
+              <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-3 rounded-xl shadow-lg">
                 <ChefHat className="h-8 w-8 text-white" />
               </div>
               <div>
@@ -616,7 +616,7 @@ function App() {
                 }}
                 className={`flex flex-col items-center justify-center space-y-1 text-xs sm:text-base px-2 py-2 sm:flex-row sm:space-y-0 sm:space-x-2 sm:px-4 sm:py-2 rounded-lg transition-all flex-1 sm:flex-none ${
                   viewMode === 'search'
-                    ? 'bg-white dark:bg-gray-900 shadow-md text-saffron-700 dark:text-saffron-400 font-semibold'
+                    ? 'bg-white dark:bg-gray-900 shadow-md text-primary-700 dark:text-primary-400 font-semibold'
                     : 'text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white'
                 }`}
               >
@@ -627,14 +627,14 @@ function App() {
                 onClick={loadFavorites}
                 className={`flex flex-col items-center justify-center space-y-1 text-xs sm:text-base px-2 py-2 sm:flex-row sm:space-y-0 sm:space-x-2 sm:px-4 sm:py-2 rounded-lg transition-all flex-1 sm:flex-none ${
                   viewMode === 'favorites'
-                    ? 'bg-white dark:bg-gray-900 shadow-md text-saffron-700 dark:text-saffron-400 font-semibold'
+                    ? 'bg-white dark:bg-gray-900 shadow-md text-primary-700 dark:text-primary-400 font-semibold'
                     : 'text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white'
                 }`}
               >
                 <HeartIcon className="h-4 w-4 sm:h-5 sm:w-5" />
                 <span className="leading-none">Favorites</span>
                 {favoritesCount > 0 && (
-                  <span className="bg-orange-500 text-white text-[10px] sm:text-xs px-1.5 py-0.5 rounded-full">
+                  <span className="bg-warm-500 text-white text-[10px] sm:text-xs px-1.5 py-0.5 rounded-full">
                     {favoritesCount}
                   </span>
                 )}
@@ -643,7 +643,7 @@ function App() {
                 onClick={() => setViewMode('planner')}
                 className={`flex flex-col items-center justify-center space-y-1 text-xs sm:text-base px-2 py-2 sm:flex-row sm:space-y-0 sm:space-x-2 sm:px-4 sm:py-2 rounded-lg transition-all flex-1 sm:flex-none ${
                   viewMode === 'planner'
-                    ? 'bg-white dark:bg-gray-900 shadow-md text-saffron-700 dark:text-saffron-400 font-semibold'
+                    ? 'bg-white dark:bg-gray-900 shadow-md text-primary-700 dark:text-primary-400 font-semibold'
                     : 'text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white'
                 }`}
               >
@@ -654,7 +654,7 @@ function App() {
                 onClick={() => setViewMode('shopping')}
                 className={`flex flex-col items-center justify-center space-y-1 text-xs sm:text-base px-2 py-2 sm:flex-row sm:space-y-0 sm:space-x-2 sm:px-4 sm:py-2 rounded-lg transition-all flex-1 sm:flex-none ${
                   viewMode === 'shopping'
-                    ? 'bg-white dark:bg-gray-900 shadow-md text-saffron-700 dark:text-saffron-400 font-semibold'
+                    ? 'bg-white dark:bg-gray-900 shadow-md text-primary-700 dark:text-primary-400 font-semibold'
                     : 'text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white'
                 }`}
               >
@@ -715,9 +715,9 @@ function App() {
           {/* Filter Tabs */}
           <div className="flex flex-wrap gap-3 mb-6">
             {[
-              { type: 'ingredients' as FilterType, icon: Search, label: 'By Ingredients' },
-              { type: 'mood' as FilterType, icon: Sparkles, label: 'Mood & Cravings' },
-              { type: 'time' as FilterType, icon: Clock, label: 'Time Available' },
+              { type: 'ingredients' as FilterType, icon: Utensils, label: 'By Ingredients' },
+              { type: 'mood' as FilterType, icon: Flame, label: 'Mood & Cravings' },
+              { type: 'time' as FilterType, icon: Timer, label: 'Time Available' },
               ].map(({ type, icon: Icon, label }) => (
               <button
                 key={type}
@@ -733,7 +733,7 @@ function App() {
                 }}
                 className={`flex items-center space-x-2 px-4 py-2 sm:px-6 sm:py-3 rounded-xl transition-all text-sm sm:text-base ${
                   filterType === type
-                  ? 'bg-gradient-to-r from-saffron-500 to-saffron-600 text-white shadow-lg scale-105'
+                  ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg scale-105'
                   : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700'
                 }`}
               >
@@ -785,18 +785,18 @@ function App() {
                     ? 'What are you craving? (e.g., "spicy", "comfort food")'
                     : 'How much time do you have? (e.g., "quick", "30 minutes")'
                 }
-                className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-saffron-500 focus:outline-none text-lg bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100"
+                className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-primary-500 focus:outline-none text-lg bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100"
               />
 
               {/* Selected ingredient chips */}
               {filterType === 'ingredients' && parseIngredients(searchQuery).length > 0 && (
                 <div className="mt-2 flex flex-wrap gap-2">
                   {parseIngredients(searchQuery).map((ing) => (
-                    <span key={ing} className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-saffron-200 text-saffron-900">
+                    <span key={ing} className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-primary-200 text-primary-900">
                       {ing}
                       <button
                         type="button"
-                        className="ml-1 text-saffron-900/80 hover:text-saffron-900"
+                        className="ml-1 text-primary-900/80 hover:text-primary-900"
                         onMouseDown={(e) => e.preventDefault()}
                         onClick={() => removeIngredient(ing)}
                         aria-label={`Remove ${ing}`}
@@ -831,7 +831,7 @@ function App() {
                         e.preventDefault();
                         handleSuggestionClick(suggestion, e);
                       }}
-                      className="w-full text-left px-4 py-3 hover:bg-saffron-100 transition-colors border-b border-gray-100 last:border-b-0 flex items-center space-x-2 cursor-pointer"
+                      className="w-full text-left px-4 py-3 hover:bg-primary-50 transition-colors border-b border-gray-100 last:border-b-0 flex items-center space-x-2 cursor-pointer"
                     >
                       <Search className="h-4 w-4 text-gray-400" />
                       <span className="text-gray-700 dark:text-gray-200 font-medium">{suggestion}</span>
@@ -843,7 +843,7 @@ function App() {
             <button
               onClick={handleSearch}
               disabled={isLoading}
-              className="bg-gradient-to-r from-saffron-500 to-saffron-600 text-white px-8 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+              className="bg-gradient-to-r from-primary-500 to-primary-600 text-white px-8 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
             >
               {isLoading ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
@@ -872,7 +872,7 @@ function App() {
                   // Use tag directly in the search
                   await performSearch(tag);
                 }}
-                className="px-4 py-2 bg-saffron-200 text-saffron-800 rounded-full text-sm font-medium hover:bg-saffron-300 transition-colors"
+                className="px-4 py-2 bg-accent-200 text-accent-800 rounded-full text-sm font-medium hover:bg-accent-300 transition-colors"
               >
                 {tag}
               </button>
@@ -892,7 +892,7 @@ function App() {
                   key={idx}
                   type="button"
                   onClick={() => handleQuickIdeaClick(idea)}
-                  className="px-3 py-1 bg-saffron-200 text-saffron-800 rounded-full text-sm font-medium hover:bg-saffron-300 transition-colors"
+                  className="px-3 py-1 bg-primary-200 text-primary-800 rounded-full text-sm font-medium hover:bg-primary-300 transition-colors"
                 >
                   {idea}
                 </button>

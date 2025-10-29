@@ -8,14 +8,14 @@ interface RecipeModalProps {
 
 export default function RecipeModal({ recipe, onClose }: RecipeModalProps) {
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex items-center justify-between">
+        <div className="sticky top-0 bg-white/95 backdrop-blur-sm border-b border-gray-200 p-6 flex items-center justify-between z-10">
           <h2 className="text-2xl font-bold text-gray-800">{recipe.strMeal}</h2>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 transition-colors"
+            className="text-gray-500 hover:text-gray-700 transition-colors p-2 hover:bg-gray-100 rounded-lg"
           >
             <X className="h-6 w-6" />
           </button>
@@ -35,21 +35,21 @@ export default function RecipeModal({ recipe, onClose }: RecipeModalProps) {
           {/* Enhanced Recipe Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             {recipe.estimatedTime && (
-              <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-xl border border-blue-200">
+              <div className="bg-gradient-to-br from-accent-50 to-accent-100 p-4 rounded-xl border border-accent-200">
                 <div className="flex items-center mb-2">
-                  <Clock className="h-5 w-5 text-blue-600 mr-2" />
-                  <span className="text-xs font-semibold text-blue-700 uppercase">Time</span>
+                  <Clock className="h-5 w-5 text-accent-600 mr-2" />
+                  <span className="text-xs font-semibold text-accent-700 uppercase">Time</span>
                 </div>
-                <div className="text-2xl font-bold text-blue-900">{recipe.estimatedTime} min</div>
+                <div className="text-2xl font-bold text-accent-900">{recipe.estimatedTime} min</div>
               </div>
             )}
             {recipe.servingSize && (
-              <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-xl border border-green-200">
+              <div className="bg-gradient-to-br from-primary-50 to-primary-100 p-4 rounded-xl border border-primary-200">
                 <div className="flex items-center mb-2">
-                  <Users className="h-5 w-5 text-green-600 mr-2" />
-                  <span className="text-xs font-semibold text-green-700 uppercase">Serves</span>
+                  <Users className="h-5 w-5 text-primary-600 mr-2" />
+                  <span className="text-xs font-semibold text-primary-700 uppercase">Serves</span>
                 </div>
-                <div className="text-2xl font-bold text-green-900">{recipe.servingSize}</div>
+                <div className="text-2xl font-bold text-primary-900">{recipe.servingSize}</div>
               </div>
             )}
             {recipe.difficulty && (
@@ -62,12 +62,12 @@ export default function RecipeModal({ recipe, onClose }: RecipeModalProps) {
               </div>
             )}
             {recipe.estimatedCost && (
-              <div className="bg-gradient-to-br from-saffron-100 to-white p-4 rounded-xl border border-saffron-300">
+              <div className="bg-gradient-to-br from-warm-100 to-white p-4 rounded-xl border border-warm-300">
                 <div className="flex items-center mb-2">
-                  <DollarSign className="h-5 w-5 text-saffron-700 mr-2" />
-                  <span className="text-xs font-semibold text-saffron-700 uppercase">Cost</span>
+                  <DollarSign className="h-5 w-5 text-warm-700 mr-2" />
+                  <span className="text-xs font-semibold text-warm-700 uppercase">Cost</span>
                 </div>
-                <div className="text-2xl font-bold text-saffron-800">{recipe.estimatedCost}</div>
+                <div className="text-2xl font-bold text-warm-800">{recipe.estimatedCost}</div>
               </div>
             )}
           </div>
@@ -76,7 +76,7 @@ export default function RecipeModal({ recipe, onClose }: RecipeModalProps) {
           <div className="flex flex-wrap gap-4 mb-6">
             {recipe.strCategory && (
               <div className="flex items-center text-sm text-gray-600">
-                <ChefHat className="h-4 w-4 mr-2 text-saffron-700" />
+                <ChefHat className="h-4 w-4 mr-2 text-primary-700" />
                 <span className="font-medium">{recipe.strCategory}</span>
               </div>
             )}
@@ -89,27 +89,27 @@ export default function RecipeModal({ recipe, onClose }: RecipeModalProps) {
 
           {/* Nutritional Information */}
           {recipe.nutritionalInfo && (
-            <div className="bg-gradient-to-r from-saffron-100 to-white border border-saffron-300 rounded-xl p-5 mb-6">
+            <div className="bg-gradient-to-r from-warm-50 to-white border border-warm-200 rounded-xl p-5 mb-6">
               <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                <Flame className="h-6 w-6 mr-2 text-saffron-700" />
+                <Flame className="h-6 w-6 mr-2 text-warm-600" />
                 Nutritional Information
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {recipe.nutritionalInfo.calories && (
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-saffron-700">{recipe.nutritionalInfo.calories}</div>
+                    <div className="text-2xl font-bold text-warm-600">{recipe.nutritionalInfo.calories}</div>
                     <div className="text-sm text-gray-600">Calories</div>
                   </div>
                 )}
                 {recipe.nutritionalInfo.protein && (
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-blue-600">{recipe.nutritionalInfo.protein}</div>
+                    <div className="text-2xl font-bold text-accent-600">{recipe.nutritionalInfo.protein}</div>
                     <div className="text-sm text-gray-600">Protein</div>
                   </div>
                 )}
                 {recipe.nutritionalInfo.carbs && (
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-green-600">{recipe.nutritionalInfo.carbs}</div>
+                    <div className="text-2xl font-bold text-primary-600">{recipe.nutritionalInfo.carbs}</div>
                     <div className="text-sm text-gray-600">Carbs</div>
                   </div>
                 )}
@@ -126,7 +126,7 @@ export default function RecipeModal({ recipe, onClose }: RecipeModalProps) {
           {/* Ingredients */}
           <div className="mb-6">
             <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-              <span className="bg-saffron-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-2">
+              <span className="bg-primary-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-2">
                 {recipe.ingredients.length}
               </span>
               Ingredients
@@ -150,15 +150,15 @@ export default function RecipeModal({ recipe, onClose }: RecipeModalProps) {
 
           {/* Cooking Tips */}
           {recipe.cookingTips && recipe.cookingTips.length > 0 && (
-            <div className="bg-blue-50 border-l-4 border-blue-500 p-5 rounded-r-lg mb-6">
+            <div className="bg-accent-50 border-l-4 border-accent-500 p-5 rounded-r-lg mb-6">
               <h3 className="text-lg font-bold text-gray-800 mb-3 flex items-center">
-                <SparklesIcon className="h-5 w-5 mr-2 text-blue-500" />
+                <SparklesIcon className="h-5 w-5 mr-2 text-accent-500" />
                 Pro Tips
               </h3>
               <ul className="space-y-2">
                 {recipe.cookingTips.map((tip, index) => (
                   <li key={index} className="flex items-start text-gray-700">
-                    <AlertCircle className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <AlertCircle className="h-5 w-5 mr-2 text-accent-500 flex-shrink-0 mt-0.5" />
                     <span>{tip}</span>
                   </li>
                 ))}
@@ -169,7 +169,7 @@ export default function RecipeModal({ recipe, onClose }: RecipeModalProps) {
           {/* Instructions */}
           <div className="mb-6">
             <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-              <Clock className="h-6 w-6 mr-2 text-saffron-700" />
+              <Clock className="h-6 w-6 mr-2 text-primary-700" />
               Instructions
             </h3>
             <div className="prose max-w-none">
@@ -187,7 +187,7 @@ export default function RecipeModal({ recipe, onClose }: RecipeModalProps) {
                 {recipe.strTags.split(',').map((tag, index) => (
                   <span
                     key={index}
-                    className="bg-saffron-200 text-saffron-800 px-3 py-1 rounded-full text-sm"
+                    className="bg-primary-200 text-primary-800 px-3 py-1 rounded-full text-sm"
                   >
                     {tag.trim()}
                   </span>

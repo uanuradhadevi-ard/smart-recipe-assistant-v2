@@ -1,5 +1,5 @@
 import { Recipe } from '../types/recipe';
-import { Clock, Users, ChevronRight, Heart } from 'lucide-react';
+import { MapPin, ChevronRight, Heart, Tag } from 'lucide-react';
 import { isFavorite, toggleFavorite } from '../utils/favorites';
 import { useState } from 'react';
 
@@ -20,7 +20,7 @@ export default function RecipeCard({ recipe, onClick }: RecipeCardProps) {
   return (
     <div
       onClick={onClick}
-      className="bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+      className="bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer transform transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl border border-gray-100 hover:border-primary-200"
     >
       <div className="relative h-48 overflow-hidden">
         <img
@@ -30,17 +30,18 @@ export default function RecipeCard({ recipe, onClick }: RecipeCardProps) {
         />
         {recipe.strCategory && (
           <div className="absolute top-3 left-3">
-            <span className="bg-white px-3 py-1 rounded-full text-xs font-semibold text-saffron-700 shadow-md">
+            <span className="inline-flex items-center gap-1 bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-semibold text-primary-700 shadow-md">
+              <Tag className="h-3 w-3" />
               {recipe.strCategory}
             </span>
           </div>
         )}
         <button
           onClick={handleFavoriteClick}
-          className={`absolute top-3 right-3 p-2 rounded-full shadow-lg transition-all ${
+          className={`absolute top-3 right-3 p-2 rounded-full shadow-lg transition-all transform hover:scale-110 ${
             isFav
               ? 'bg-red-500 text-white'
-              : 'bg-white text-gray-600 hover:bg-red-50'
+              : 'bg-white/95 backdrop-blur-sm text-gray-600 hover:bg-red-50'
           }`}
         >
           <Heart className={`h-5 w-5 ${isFav ? 'fill-current' : ''}`} />
@@ -52,16 +53,13 @@ export default function RecipeCard({ recipe, onClick }: RecipeCardProps) {
         </h3>
         {recipe.strArea && (
           <div className="flex items-center text-sm text-gray-600 mb-3">
-            <Users className="h-4 w-4 mr-1" />
-            <span>{recipe.strArea}</span>
+            <MapPin className="h-4 w-4 mr-1" />
+            <span>{recipe.strArea} Cuisine</span>
           </div>
         )}
-        <div className="flex items-center justify-between mt-4">
-          <div className="flex items-center text-sm text-gray-500">
-            <Clock className="h-4 w-4 mr-1" />
-            <span>Recipe Details</span>
-          </div>
-          <ChevronRight className="h-5 w-5 text-saffron-600" />
+        <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100">
+          <span className="text-sm font-medium text-primary-600">View Recipe</span>
+          <ChevronRight className="h-5 w-5 text-primary-600" />
         </div>
       </div>
     </div>
