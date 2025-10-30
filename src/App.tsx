@@ -47,6 +47,12 @@ function App() {
   const [advTime, setAdvTime] = useState<string>('');
   const [advMood, setAdvMood] = useState<string>('');
   const [advStrictIngredients, setAdvStrictIngredients] = useState<boolean>(false);
+  const [advIngSuggestions, setAdvIngSuggestions] = useState<string[]>([]);
+  const [advTimeSuggestions, setAdvTimeSuggestions] = useState<string[]>([]);
+  const [advMoodSuggestions, setAdvMoodSuggestions] = useState<string[]>([]);
+  const [showAdvIngSug, setShowAdvIngSug] = useState<boolean>(false);
+  const [showAdvTimeSug, setShowAdvTimeSug] = useState<boolean>(false);
+  const [showAdvMoodSug, setShowAdvMoodSug] = useState<boolean>(false);
   const tryIdeaSearch = async (terms: string[]) => {
     for (const t of terms) {
       const matches = await searchByName(t);
@@ -886,13 +892,54 @@ function App() {
             <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border rounded-xl bg-gray-50 dark:bg-gray-900 dark:border-gray-700">
               <div>
                 <label className="block text-sm font-semibold mb-1 text-gray-700 dark:text-gray-200">Ingredients (comma-separated)</label>
-                <input
-                  type="text"
-                  value={advIngredients}
-                  onChange={(e) => setAdvIngredients(e.target.value)}
-                  placeholder="e.g., chicken, onion, chili"
-                  className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={advIngredients}
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      setAdvIngredients(v);
+                      const s = getSuggestions(v, 'ingredients');
+                      setAdvIngSuggestions(s);
+                      setShowAdvIngSug(s.length > 0);
+                    }}
+                    onFocus={() => { if (advIngSuggestions.length > 0) setShowAdvIngSug(true); }}
+                    onBlur={(e) => { const rt = e.relatedTarget as HTMLElement; if (!rt?.closest('.suggestions-dropdown')) setTimeout(() => setShowAdvIngSug(false), 150); }}
+                    placeholder="e.g., chicken, onion, chili"
+                    className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
+                  />
+                  {showAdvIngSug && advIngSuggestions.length > 0 && (
+                    <div className="absolute z-10 w-full mt-2 bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl shadow-xl max-h-56 overflow-y-auto suggestions-dropdown">
+                      {advIngSuggestions.map((sug, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            // Append or replace last token like main input
+                            const parts = advIngredients.split(',');
+                            const trimmed = parts.map(p => p.trim()).filter(Boolean);
+                            const lastIndex = parts.length - 1;
+                            const beforeLast = parts.slice(0, lastIndex).map(p => p.trim()).filter(Boolean);
+                            const lastToken = (parts[lastIndex] ?? '').trim();
+                            const existing = new Set(trimmed.map(p => p.toLowerCase()));
+                            if (!existing.has(sug.toLowerCase())) {
+                              const newVal = lastToken && !existing.has(lastToken.toLowerCase())
+                                ? [...beforeLast, sug].join(', ')
+                                : [...trimmed, sug].join(', ');
+                              setAdvIngredients(newVal);
+                            }
+                            setShowAdvIngSug(false);
+                          }}
+                          className="w-full text-left px-3 py-2 hover:bg-primary-50 transition-colors border-b last:border-b-0"
+                        >
+                          {sug}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 <label className="mt-2 inline-flex items-center gap-2 text-xs text-gray-700 dark:text-gray-300">
                   <input type="checkbox" checked={advStrictIngredients} onChange={(e) => setAdvStrictIngredients(e.target.checked)} />
                   Strict: only my ingredients
@@ -900,24 +947,74 @@ function App() {
               </div>
               <div>
                 <label className="block text-sm font-semibold mb-1 text-gray-700 dark:text-gray-200">Time Available</label>
-                <input
-                  type="text"
-                  value={advTime}
-                  onChange={(e) => setAdvTime(e.target.value)}
-                  placeholder="e.g., 30, 18, 1 hour"
-                  className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={advTime}
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      setAdvTime(v);
+                      const s = getSuggestions(v, 'time');
+                      setAdvTimeSuggestions(s);
+                      setShowAdvTimeSug(s.length > 0);
+                    }}
+                    onFocus={() => { if (advTimeSuggestions.length > 0) setShowAdvTimeSug(true); }}
+                    onBlur={(e) => { const rt = e.relatedTarget as HTMLElement; if (!rt?.closest('.suggestions-dropdown')) setTimeout(() => setShowAdvTimeSug(false), 150); }}
+                    placeholder="e.g., 30, 18, 1 hour"
+                    className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
+                  />
+                  {showAdvTimeSug && advTimeSuggestions.length > 0 && (
+                    <div className="absolute z-10 w-full mt-2 bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl shadow-xl max-h-56 overflow-y-auto suggestions-dropdown">
+                      {advTimeSuggestions.map((sug, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={(e) => { e.preventDefault(); setAdvTime(sug); setShowAdvTimeSug(false); }}
+                          className="w-full text-left px-3 py-2 hover:bg-primary-50 transition-colors border-b last:border-b-0"
+                        >
+                          {sug}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 <p className="text-xs text-gray-500 mt-1">Snaps to nearest 5 min and expands if needed</p>
               </div>
               <div>
                 <label className="block text-sm font-semibold mb-1 text-gray-700 dark:text-gray-200">Mood & Cravings</label>
-                <input
-                  type="text"
-                  value={advMood}
-                  onChange={(e) => setAdvMood(e.target.value)}
-                  placeholder="e.g., spicy, dessert, simple"
-                  className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={advMood}
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      setAdvMood(v);
+                      const s = getSuggestions(v, 'mood');
+                      setAdvMoodSuggestions(s);
+                      setShowAdvMoodSug(s.length > 0);
+                    }}
+                    onFocus={() => { if (advMoodSuggestions.length > 0) setShowAdvMoodSug(true); }}
+                    onBlur={(e) => { const rt = e.relatedTarget as HTMLElement; if (!rt?.closest('.suggestions-dropdown')) setTimeout(() => setShowAdvMoodSug(false), 150); }}
+                    placeholder="e.g., spicy, dessert, simple"
+                    className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
+                  />
+                  {showAdvMoodSug && advMoodSuggestions.length > 0 && (
+                    <div className="absolute z-10 w-full mt-2 bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl shadow-xl max-h-56 overflow-y-auto suggestions-dropdown">
+                      {advMoodSuggestions.map((sug, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={(e) => { e.preventDefault(); setAdvMood(sug); setShowAdvMoodSug(false); }}
+                          className="w-full text-left px-3 py-2 hover:bg-primary-50 transition-colors border-b last:border-b-0"
+                        >
+                          {sug}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 <p className="text-xs text-gray-500 mt-1">Uses smart synonyms (e.g., spicy → chili, pepper)</p>
               </div>
               <div className="md:col-span-3 flex justify-end">
