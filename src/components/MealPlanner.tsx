@@ -64,13 +64,13 @@ export default function MealPlanner({ onAddToShoppingList }: MealPlannerProps) {
   week.meals.forEach(m => { mealsByDaySlot[`${m.date}-${m.slot}`] = m; });
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl p-6">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
       <div className="flex items-center justify-between mb-6">
       <div className="flex items-center space-x-3">
           <div className="p-2 bg-accent-100 rounded-lg">
             <CalendarDays className="h-6 w-6 text-accent-700" />
           </div>
-          <h2 className="text-xl font-bold text-gray-800">Weekly Meal Planner</h2>
+          <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">Weekly Meal Planner</h2>
         </div>
         <div className="flex gap-2">
           <button onClick={() => setCurrent(d => { const nd = new Date(d); nd.setDate(d.getDate() - 7); return startOfWeek(nd); })} className="px-3 py-2 rounded-lg bg-primary-200 hover:bg-accent-200 hover:text-accent-800 transition-colors flex items-center gap-1">
@@ -91,7 +91,7 @@ export default function MealPlanner({ onAddToShoppingList }: MealPlannerProps) {
           const dateStr = formatISO(d);
           return (
             <div key={i} className="border rounded-xl p-4">
-              <div className="font-semibold text-gray-800 mb-3">
+              <div className="font-semibold text-gray-800 dark:text-gray-100 mb-3">
                 {d.toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' })}
               </div>
               <div className="space-y-3">
@@ -100,7 +100,7 @@ export default function MealPlanner({ onAddToShoppingList }: MealPlannerProps) {
                   const planned = mealsByDaySlot[key];
                   return (
                     <div key={key} className="">
-                      <div className="text-xs uppercase tracking-wide text-gray-500 mb-1">{slot}</div>
+                      <div className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-1">{slot}</div>
                       {planned ? (
                         <div className="flex items-center justify-between bg-accent-50 border border-accent-300 rounded-lg p-2">
                           <div className="flex items-center gap-3">
@@ -108,8 +108,8 @@ export default function MealPlanner({ onAddToShoppingList }: MealPlannerProps) {
                               <img src={planned.recipeThumb} alt={planned.recipeName} className="h-8 w-8 rounded object-cover" />
                             )}
                             <div>
-                              <div className="text-sm font-semibold text-gray-800">{planned.recipeName}</div>
-                              <div className="text-xs text-gray-500">#{planned.recipeId}</div>
+                              <div className="text-sm font-semibold text-gray-800 dark:text-gray-100">{planned.recipeName}</div>
+                              <div className="text-xs text-gray-500 dark:text-gray-400">#{planned.recipeId}</div>
                             </div>
                           </div>
                           <button onClick={() => removeMeal(planned.id)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg">
@@ -180,19 +180,19 @@ export default function MealPlanner({ onAddToShoppingList }: MealPlannerProps) {
         <div className="min-w-[720px] grid" style={{ gridTemplateColumns: '120px repeat(7, 1fr)' }}>
           <div className="p-3 font-semibold text-gray-700">Meal</div>
           {days.map((d, i) => (
-            <div key={i} className="p-3 font-semibold text-gray-700 text-center">
+            <div key={i} className="p-3 font-semibold text-gray-700 dark:text-gray-300 text-center">
               {d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
             </div>
           ))}
           {slots.map(slot => (
             <>
-              <div key={`${slot}-label`} className="p-3 font-semibold capitalize border-t bg-gray-50">{slot}</div>
+              <div key={`${slot}-label`} className="p-3 font-semibold capitalize border-t bg-gray-50 dark:bg-gray-700 dark:text-gray-200">{slot}</div>
               {days.map((d, i) => {
                 const dateStr = formatISO(d);
                 const key = `${dateStr}-${slot}`;
                 const planned = mealsByDaySlot[key];
                 return (
-                  <div key={`${i}-${slot}`} className="p-3 border-t">
+                  <div key={`${i}-${slot}`} className="p-3 border-t dark:border-gray-700">
                     {planned ? (
                       <div className="flex items-center justify-between bg-accent-50 border border-accent-300 rounded-lg p-2">
                         <div className="flex items-center gap-3">

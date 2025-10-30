@@ -671,11 +671,11 @@ function App() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Favorites View */}
         {viewMode === 'favorites' && (
-          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8 mb-8">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-8">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-2xl font-bold text-gray-800 mb-2">Your Favorites</h2>
-                <p className="text-gray-600">
+                <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">Your Favorites</h2>
+                <p className="text-gray-600 dark:text-gray-300">
                   {recipes.length === 0 
                     ? 'You haven\'t saved any favorites yet. Search for recipes and click the ❤️ icon to save them!'
                     : `You have ${recipes.length} saved recipe${recipes.length !== 1 ? 's' : ''}`
@@ -688,21 +688,21 @@ function App() {
 
         {/* Planner View */}
         {viewMode === 'planner' && (
-          <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6 mb-8">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-4 sm:p-6 mb-8">
             <MealPlanner onAddToShoppingList={(p) => handlePlannedMealAdd(p)} />
           </div>
         )}
 
         {/* Shopping List View */}
         {viewMode === 'shopping' && (
-          <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6 mb-8">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-4 sm:p-6 mb-8">
             <ShoppingList />
           </div>
         )}
 
         {/* Search Section - Only show in search mode */}
         {viewMode === 'search' && (
-          <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-8">
           <div className="mb-6">
             <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4">
               What do you want to cook today?

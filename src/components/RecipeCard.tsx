@@ -20,7 +20,7 @@ export default function RecipeCard({ recipe, onClick }: RecipeCardProps) {
   return (
     <div
       onClick={onClick}
-      className="bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer transform transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl border border-primary-400/30 hover:border-accent-400"
+      className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden cursor-pointer transform transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl border border-primary-400/30 dark:border-gray-700 hover:border-accent-400"
     >
       <div className="relative h-48 overflow-hidden">
         <img
@@ -48,11 +48,11 @@ export default function RecipeCard({ recipe, onClick }: RecipeCardProps) {
         </button>
       </div>
       <div className="p-5">
-        <h3 className="text-lg font-bold text-gray-800 mb-2 line-clamp-2">
+        <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-2 line-clamp-2">
           {recipe.strMeal}
         </h3>
         {recipe.strArea && (
-          <div className="flex items-center text-sm text-gray-600 mb-3">
+          <div className="flex items-center text-sm text-gray-600 dark:text-gray-300 mb-3">
             <MapPin className="h-4 w-4 mr-1" />
             <span>{recipe.strArea} Cuisine</span>
           </div>
