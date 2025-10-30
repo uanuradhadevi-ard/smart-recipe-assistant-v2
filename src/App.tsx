@@ -440,7 +440,7 @@ function App() {
           });
 
           const detailedResults = await Promise.all(
-            bucketResults.slice(0, 30).map(async (recipe) => {
+            bucketResults.slice(0, 18).map(async (recipe) => {
               try {
                 const details = await getRecipeById(recipe.idMeal);
                 if (details && details.estimatedTime && details.estimatedTime <= maxTime) {
@@ -458,6 +458,14 @@ function App() {
           if (filtered.length > 0) {
             found = filtered;
             console.log(`Found ${filtered.length} recipes under ${maxTime} minutes`);
+            break;
+          }
+
+          // Fast fallback: if no timed matches, show a few quick candidates directly
+          if (maxTime <= 20 && bucketResults.length > 0) {
+            found = bucketResults.slice(0, 9);
+            setError(`Showing quick candidates while timed matches are scarce (≤${maxTime} min).`);
+            setTimeout(() => setError(null), 3500);
             break;
           }
         }
@@ -700,27 +708,10 @@ function App() {
       const parts = searchQuery.split(',');
       const trimmedParts = parts.map(p => p.trim()).filter(Boolean);
       const lastIndex = parts.length - 1;
-      const existing = new Set(trimmedParts.map(p => p.toLowerCase()));
-
-      if (parts.length > 0) {
-        const beforeLast = parts.slice(0, lastIndex).map(p => p.trim()).filter(Boolean);
-        const lastToken = (parts[lastIndex] ?? '').trim();
-        const lowerSuggestion = suggestion.toLowerCase();
-
-        if (!existing.has(lowerSuggestion)) {
-          if (lastToken && !existing.has(lastToken.toLowerCase())) {
-            // Replace last partial token
-            const newQuery = [...beforeLast, suggestion].join(', ');
-            setSearchQuery(newQuery);
-          } else {
-            // Append new ingredient
-            const newQuery = [...trimmedParts, suggestion].join(', ');
-            setSearchQuery(newQuery);
-          }
-        }
-      } else {
-        setSearchQuery(suggestion);
-      }
+      const beforeLast = parts.slice(0, lastIndex).map(p => p.trim()).filter(Boolean);
+      // Always replace last token with selected suggestion to avoid duplicates
+      const newQuery = lastIndex >= 0 ? [...beforeLast, suggestion].join(', ') : suggestion;
+      setSearchQuery(newQuery);
       setShowSuggestions(false);
       return; // Don't search yet, let them add more
     } else {
@@ -927,17 +918,10 @@ function App() {
                             e.preventDefault();
                             // Append or replace last token like main input
                             const parts = advIngredients.split(',');
-                            const trimmed = parts.map(p => p.trim()).filter(Boolean);
                             const lastIndex = parts.length - 1;
                             const beforeLast = parts.slice(0, lastIndex).map(p => p.trim()).filter(Boolean);
-                            const lastToken = (parts[lastIndex] ?? '').trim();
-                            const existing = new Set(trimmed.map(p => p.toLowerCase()));
-                            if (!existing.has(sug.toLowerCase())) {
-                              const newVal = lastToken && !existing.has(lastToken.toLowerCase())
-                                ? [...beforeLast, sug].join(', ')
-                                : [...trimmed, sug].join(', ');
-                              setAdvIngredients(newVal);
-                            }
+                            const newVal = lastIndex >= 0 ? [...beforeLast, sug].join(', ') : sug;
+                            setAdvIngredients(newVal);
                             setShowAdvIngSug(false);
                           }}
                           className="w-full text-left px-3 py-2 hover:bg-primary-50 transition-colors border-b last:border-b-0"
