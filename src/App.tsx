@@ -7,7 +7,7 @@ import MealPlanner from './components/MealPlanner';
 import ShoppingList from './components/ShoppingList';
 import RecipeModal from './components/RecipeModal';
 import { getFavorites } from './utils/favorites';
-import { getMoodSearchTerms, parseTimeInput, parseIngredients } from './utils/searchFilters';
+import { getMoodSearchTerms, parseTimeInput, parseIngredients, buildTimeBuckets } from './utils/searchFilters';
 import { getSuggestions } from './utils/autocomplete';
 import { addShoppingItem, generateWeekId } from './utils/plannerStorage';
 import { ShoppingListItem } from './types/mealPlan';
@@ -375,42 +375,39 @@ function App() {
           return bScore - aScore;
         });
       } else if (filterType === 'time') {
-        // Time-based search
-        let maxTime = parseTimeInput(query);
-        // Cap time at 60 minutes to improve availability
-        if (!maxTime || maxTime > 60) maxTime = 60;
-        console.log('Time filter: max', maxTime, 'minutes (capped at 60)');
-        
-        // If we have a time limit, search by categories that are typically quick
-        if (maxTime && maxTime <= 30) {
-          // For quick recipes, search common fast meal categories
-          const quickSearches = ['pasta', 'salad', 'sandwich', 'quick', 'easy', 'simple'];
-          for (const term of quickSearches) {
-            const termResults = await searchByName(term);
-            results = [...results, ...termResults];
+        // Time-based search: accept any minutes, snap to nearest 5, then try neighboring buckets
+        let inputMinutes = parseTimeInput(query) || 60;
+        if (inputMinutes > 60) inputMinutes = 60;
+        if (inputMinutes < 5) inputMinutes = 5;
+        const buckets: number[] = buildTimeBuckets(inputMinutes);
+
+        let found: Recipe[] = [];
+        for (const maxTime of buckets) {
+          let bucketResults: Recipe[] = [];
+          if (maxTime <= 30) {
+            const quickSearches = ['pasta', 'salad', 'sandwich', 'quick', 'easy', 'simple'];
+            for (const term of quickSearches) {
+              const termResults = await searchByName(term);
+              bucketResults = [...bucketResults, ...termResults];
+            }
+          } else {
+            bucketResults = await searchByName(query);
           }
-        } else {
-          // Search by any query terms
-          results = await searchByName(query);
-        }
-        
-        // Remove duplicates
-        const seen = new Set();
-        results = results.filter(r => {
-          if (seen.has(r.idMeal)) return false;
-          seen.add(r.idMeal);
-          return true;
-        });
-        
-        // If we have a time limit, filter by estimated time
-        if (maxTime) {
-          console.log(`Filtering ${results.length} recipes by time (≤${maxTime} min)`);
+
+          // De-duplicate
+          const seenLocal = new Set<string>();
+          bucketResults = bucketResults.filter(r => {
+            if (seenLocal.has(r.idMeal)) return false;
+            seenLocal.add(r.idMeal);
+            return true;
+          });
+
           const detailedResults = await Promise.all(
-            results.slice(0, 30).map(async (recipe) => {
+            bucketResults.slice(0, 30).map(async (recipe) => {
               try {
                 const details = await getRecipeById(recipe.idMeal);
                 if (details && details.estimatedTime && details.estimatedTime <= maxTime) {
-                  const { ingredients: _, ...rest } = details;
+                  const { ingredients: _ignore, ...rest } = details;
                   return rest;
                 }
                 return null;
@@ -419,10 +416,16 @@ function App() {
               }
             })
           );
-          
-          results = detailedResults.filter(Boolean) as Recipe[];
-          console.log(`Found ${results.length} recipes under ${maxTime} minutes`);
+
+          const filtered = detailedResults.filter(Boolean) as Recipe[];
+          if (filtered.length > 0) {
+            found = filtered;
+            console.log(`Found ${filtered.length} recipes under ${maxTime} minutes`);
+            break;
+          }
         }
+
+        results = found;
       }
       
       console.log('Found recipes:', results.length);
@@ -742,6 +745,26 @@ function App() {
               </button>
             ))}
           </div>
+
+          {/* Quick Time Chips */}
+          {filterType === 'time' && (
+            <div className="flex items-center flex-wrap gap-2 mb-4">
+              {[10, 20, 60].map((m) => (
+                <button
+                  key={m}
+                  type="button"
+                  onClick={async () => {
+                    const label = `${m} minutes`;
+                    setSearchQuery(label);
+                    await performSearch(label);
+                  }}
+                  className="px-3 py-1.5 rounded-full text-sm bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-100 border border-gray-200 dark:border-gray-700"
+                >
+                  ≤ {m} min
+                </button>
+              ))}
+            </div>
+          )}
 
           {/* Ingredient options */}
           {filterType === 'ingredients' && (

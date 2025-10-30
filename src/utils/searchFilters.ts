@@ -69,6 +69,12 @@ export function parseTimeInput(input: string): number | null {
     }
     return value;
   }
+
+  // Bare number means minutes (e.g., "17")
+  const bareNumber = normalized.match(/^(\d{1,3})$/);
+  if (bareNumber) {
+    return parseInt(bareNumber[1]);
+  }
   
   // Quick/fast keywords
   if (normalized.includes('quick') || normalized.includes('fast') || normalized.includes('speed')) {
@@ -93,6 +99,43 @@ export function parseTimeInput(input: string): number | null {
   }
   
   return null;
+}
+
+/**
+ * Rounds minutes to the nearest 5-minute boundary (min 5, max 60)
+ */
+export function roundToNearestFive(minutes: number): number {
+  if (!Number.isFinite(minutes)) return 60;
+  const clamped = Math.max(1, Math.min(minutes, 60));
+  const rounded = Math.round(clamped / 5) * 5;
+  const bounded = Math.max(5, Math.min(rounded, 60));
+  return bounded;
+}
+
+/**
+ * Builds an ordered list of 5-minute buckets to try, starting from the nearest,
+ * then alternating +5/-5 within [5, 60].
+ */
+export function buildTimeBuckets(targetMinutes: number): number[] {
+  const start = roundToNearestFive(targetMinutes);
+  const buckets: number[] = [start];
+  let offset = 5;
+  while (true) {
+    const up = start + offset;
+    const down = start - offset;
+    let pushed = false;
+    if (up <= 60) { buckets.push(up); pushed = true; }
+    if (down >= 5) { buckets.push(down); pushed = true; }
+    if (!pushed) break;
+    offset += 5;
+  }
+  // Ensure unique and bounded
+  const seen = new Set<number>();
+  return buckets.filter(b => {
+    if (seen.has(b)) return false;
+    seen.add(b);
+    return true;
+  });
 }
 
 /**
