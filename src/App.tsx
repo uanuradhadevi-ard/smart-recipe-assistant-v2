@@ -7,7 +7,7 @@ import MealPlanner from './components/MealPlanner';
 import ShoppingList from './components/ShoppingList';
 import RecipeModal from './components/RecipeModal';
 import { getFavorites } from './utils/favorites';
-import { getMoodSearchTerms, parseTimeInput, parseIngredients, buildTimeBuckets } from './utils/searchFilters';
+import { getMoodSearchTerms, parseTimeInput, parseIngredients, buildTimeBuckets, normalizeIngredient } from './utils/searchFilters';
 import { getSuggestions } from './utils/autocomplete';
 import { addShoppingItem, generateWeekId } from './utils/plannerStorage';
 import { ShoppingListItem } from './types/mealPlan';
@@ -314,11 +314,11 @@ function App() {
             })
           );
           
-          // First try STRICT subset: all recipe ingredients are within provided ingredients
-          const provided = ingredients.map(i => i.toLowerCase());
+          // First try STRICT subset: all recipe ingredients are within provided ingredients (with normalization)
+          const provided = ingredients.map(i => normalizeIngredient(i));
           const strict = (results.filter(r => {
             if (!r) return false;
-            const recipeIngredients = r.ingredients.map(ing => ing.ingredient.toLowerCase());
+            const recipeIngredients = r.ingredients.map(ing => normalizeIngredient(ing.ingredient));
             return recipeIngredients.every(ri => provided.some(pi => pi.includes(ri) || ri.includes(pi)));
           }) as RecipeDetail[]).map(r => { const { ingredients: _ignore, ...rest } = r; return rest; });
 
@@ -330,9 +330,9 @@ function App() {
             // Fallback: recipes that contain ALL specified ingredients (may include extras)
             const relaxed = (results.filter(r => {
               if (!r) return false;
-              const recipeIngredients = r.ingredients.map(ing => ing.ingredient.toLowerCase());
+              const recipeIngredients = r.ingredients.map(ing => normalizeIngredient(ing.ingredient));
               return ingredients.every(searchIng => {
-                const searchLower = searchIng.toLowerCase();
+                const searchLower = normalizeIngredient(searchIng);
                 return recipeIngredients.some(ri => ri.includes(searchLower) || searchLower.includes(ri));
               });
             }) as RecipeDetail[]).map(r => { const { ingredients: _ignore, ...rest } = r; return rest; });
@@ -340,6 +340,31 @@ function App() {
           }
           
           console.log(`Found ${results.length} recipes matching all ingredients`);
+
+          // Best-match fallback if no results: pick recipe using most provided ingredients
+          if (results.length === 0) {
+            const scored = (await Promise.all(
+              primaryResults.slice(0, 50).map(async (recipe) => {
+                try {
+                  const details = await getRecipeById(recipe.idMeal);
+                  if (!details) return null;
+                  const recipeIngs = details.ingredients.map(i => normalizeIngredient(i.ingredient));
+                  const providedSet = new Set(provided);
+                  const overlap = recipeIngs.reduce((acc, ri) => acc + (Array.from(providedSet).some(pi => pi.includes(ri) || ri.includes(pi)) ? 1 : 0), 0);
+                  return { score: overlap, details };
+                } catch { return null; }
+              })
+            )).filter(Boolean) as Array<{ score: number; details: RecipeDetail }>; 
+
+            scored.sort((a, b) => b.score - a.score);
+            if (scored.length > 0 && scored[0].score > 0) {
+              const top = scored[0].details;
+              const { ingredients: _ignore, ...rest } = top;
+              results = [rest];
+              setError('No perfect match. Showing best match that uses most of your ingredients.');
+              setTimeout(() => setError(null), 4000);
+            }
+          }
         } else {
           // Single ingredient search
           console.log('Searching by ingredient:', ingredients[0]);
@@ -520,15 +545,15 @@ function App() {
           if (targetMinutes && !(d.estimatedTime && d.estimatedTime <= maxTime)) return false;
           // ingredients filter
           if (ingList.length > 0) {
-            const recipeIngs = d.ingredients.map((i: any) => i.ingredient.toLowerCase());
+            const recipeIngs = d.ingredients.map((i: any) => normalizeIngredient(i.ingredient));
             if (advStrictIngredients) {
               // strict subset: all recipe ingredients must be within provided
-              const provided = ingList.map(i => i.toLowerCase());
+              const provided = ingList.map(i => normalizeIngredient(i));
               if (!recipeIngs.every((ri: string) => provided.some(pi => pi.includes(ri) || ri.includes(pi)))) return false;
             } else {
               // relaxed: recipe must contain all specified
               const containsAll = ingList.every(si => {
-                const s = si.toLowerCase();
+                const s = normalizeIngredient(si);
                 return recipeIngs.some((ri: string) => ri.includes(s) || s.includes(ri));
               });
               if (!containsAll) return false;
@@ -549,6 +574,36 @@ function App() {
         });
 
         if (filtered.length > 0) { finalResults = filtered; break; }
+      }
+
+      // Best-match fallback for advanced filters if nothing matched
+      if ((finalResults?.length || 0) === 0 && ingList.length > 0) {
+        const providedNorm = ingList.map(i => normalizeIngredient(i));
+        const scored = (await Promise.all(
+          candidates.slice(0, 60).map(async (c) => {
+            try {
+              const d = await getRecipeById(c.idMeal);
+              if (!d) return null;
+              if (targetMinutes && !(d.estimatedTime && d.estimatedTime <= (buildTimeBuckets(Math.min(Math.max(targetMinutes, 5), 60))[0] || 60))) return null;
+              const recipeIngs = d.ingredients.map(i => normalizeIngredient(i.ingredient));
+              const overlap = recipeIngs.reduce((acc, ri) => acc + (providedNorm.some(pi => pi.includes(ri) || ri.includes(pi)) ? 1 : 0), 0);
+              // mood soft score
+              const name = (d.strMeal || '').toLowerCase();
+              const tags = (d.strTags || '').toLowerCase();
+              const ingStr = recipeIngs.join(' ');
+              const moodHit = (advMood.trim() ? getMoodSearchTerms(advMood.trim()) : []).some(mt => name.includes(mt) || tags.includes(mt) || ingStr.includes(mt)) ? 0.5 : 0;
+              return { score: overlap + moodHit, details: d };
+            } catch { return null; }
+          })
+        )).filter(Boolean) as Array<{ score: number; details: RecipeDetail }>;
+        scored.sort((a, b) => b.score - a.score);
+        if (scored.length > 0 && scored[0].score > 0) {
+          const top = scored[0].details;
+          const { ingredients: _ignore, ...rest } = top as any;
+          finalResults = [rest as Recipe];
+          setError('No perfect match. Showing best match that uses most of your ingredients.');
+          setTimeout(() => setError(null), 4000);
+        }
       }
 
       setRecipes(finalResults);

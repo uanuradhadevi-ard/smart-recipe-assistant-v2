@@ -171,6 +171,45 @@ export function parseIngredients(input: string): string[] {
 }
 
 /**
+ * Normalizes ingredient names using common aliases to improve matching
+ */
+export function normalizeIngredient(name: string): string {
+  const n = name.toLowerCase().trim();
+  const map: Record<string, string> = {
+    'chilli': 'chili',
+    'green chilli': 'chili',
+    'green chili': 'chili',
+    'red chilli': 'chili',
+    'red chili': 'chili',
+    'capsicum': 'bell pepper',
+    'bell pepper': 'bell pepper',
+    'brinjal': 'eggplant',
+    'aubergine': 'eggplant',
+    'ladies finger': 'okra',
+    'ladyfinger': 'okra',
+    'bhindi': 'okra',
+    'coriander': 'cilantro',
+    'curd': 'yogurt',
+    'maize': 'corn',
+    'spring onion': 'green onion',
+    'scallion': 'green onion',
+    'garbanzo': 'chickpea',
+    'gram': 'chickpea',
+    'kidney beans': 'rajma',
+  };
+  // direct map
+  if (map[n]) return map[n];
+  // pattern-based
+  if (n.includes('chilli')) return 'chili';
+  if (n.includes('capsicum')) return 'bell pepper';
+  if (n.includes('brinjal') || n.includes('aubergine')) return 'eggplant';
+  if (n.includes('ladies finger') || n.includes('ladyfinger') || n.includes('bhindi')) return 'okra';
+  if (n.includes('scallion') || n.includes('spring onion')) return 'green onion';
+  if (n.includes('garbanzo')) return 'chickpea';
+  return n;
+}
+
+/**
  * Checks if recipe contains all required ingredients
  */
 export function recipeContainsIngredients(recipeIngredients: string[], searchIngredients: string[]): boolean {
