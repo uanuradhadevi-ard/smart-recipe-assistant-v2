@@ -3,6 +3,9 @@ import { enrichRecipeData } from '../utils/recipeEnhancer';
 
 const BASE_URL = 'https://www.themealdb.com/api/json/v1/1';
 
+// Simple in-memory cache to avoid repeated detail fetches
+const detailCache = new Map<string, RecipeDetail>();
+
 export async function searchByIngredient(ingredient: string): Promise<Recipe[]> {
   try {
     const response = await fetch(
@@ -18,6 +21,9 @@ export async function searchByIngredient(ingredient: string): Promise<Recipe[]> 
 
 export async function getRecipeById(id: string): Promise<RecipeDetail | null> {
   try {
+    if (detailCache.has(id)) {
+      return detailCache.get(id)!;
+    }
     const response = await fetch(`${BASE_URL}/lookup.php?i=${id}`);
     const data: MealDBResponse = await response.json();
     
@@ -50,7 +56,9 @@ export async function getRecipeById(id: string): Promise<RecipeDetail | null> {
     };
     
     // Enrich with additional data
-    return enrichRecipeData(baseRecipe);
+    const enriched = enrichRecipeData(baseRecipe);
+    detailCache.set(id, enriched);
+    return enriched;
   } catch (error) {
     console.error('Error fetching recipe details:', error);
     return null;

@@ -512,6 +512,13 @@ function App() {
       if (ingList.length > 0) {
         const base = await searchByIngredient(ingList[0]);
         candidates = base;
+        // If mood provided too, merge in by-name mood results to widen pool early
+        if (moodTerms.length > 0) {
+          for (const term of moodTerms.slice(0, 2)) {
+            const r = await searchByName(term);
+            candidates = [...candidates, ...r];
+          }
+        }
       } else if (moodTerms.length > 0) {
         for (const term of moodTerms.slice(0, 3)) {
           const r = await searchByName(term);
@@ -537,7 +544,7 @@ function App() {
       let finalResults: Recipe[] = [];
       for (const maxTime of buckets) {
         const details = await Promise.all(
-          candidates.slice(0, 60).map(async (c) => {
+          candidates.slice(0, 24).map(async (c) => {
             try {
               const d = await getRecipeById(c.idMeal);
               return d;
@@ -557,12 +564,13 @@ function App() {
               const provided = ingList.map(i => normalizeIngredient(i));
               if (!recipeIngs.every((ri: string) => provided.some(pi => pi.includes(ri) || ri.includes(pi)))) return false;
             } else {
-              // relaxed: recipe must contain all specified
-              const containsAll = ingList.every(si => {
+              // relaxed: require most of specified (allow 1 missing when 3+ provided)
+              const hits = ingList.reduce((acc, si) => {
                 const s = normalizeIngredient(si);
-                return recipeIngs.some((ri: string) => ri.includes(s) || s.includes(ri));
-              });
-              if (!containsAll) return false;
+                return acc + (recipeIngs.some((ri: string) => ri.includes(s) || s.includes(ri)) ? 1 : 0);
+              }, 0);
+              const maxMissing = ingList.length >= 3 ? 1 : 0;
+              if (hits < ingList.length - maxMissing) return false;
             }
           }
           // mood filter
