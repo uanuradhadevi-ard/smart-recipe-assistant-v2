@@ -428,7 +428,17 @@ function App() {
               bucketResults = [...bucketResults, ...termResults];
             }
           } else {
-            bucketResults = await searchByName(query);
+            // For larger windows (≥45), gather a broad candidate pool, then filter by time
+            if (maxTime >= 45) {
+              const seeds = ['a','e','chicken','beef','pasta','salad','soup','rice','fish','vegetarian','dessert'];
+              for (const term of seeds) {
+                const r = await searchByName(term);
+                bucketResults = [...bucketResults, ...r];
+                if (bucketResults.length > 90) break;
+              }
+            } else {
+              bucketResults = await searchByName(query);
+            }
           }
 
           // De-duplicate
@@ -440,7 +450,7 @@ function App() {
           });
 
           const detailedResults = await Promise.all(
-            bucketResults.slice(0, 18).map(async (recipe) => {
+            bucketResults.slice(0, 36).map(async (recipe) => {
               try {
                 const details = await getRecipeById(recipe.idMeal);
                 if (details && details.estimatedTime && details.estimatedTime <= maxTime) {
