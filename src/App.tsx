@@ -41,6 +41,12 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
+  // Advanced combined filters
+  const [showAdvanced, setShowAdvanced] = useState<boolean>(false);
+  const [advIngredients, setAdvIngredients] = useState<string>('');
+  const [advTime, setAdvTime] = useState<string>('');
+  const [advMood, setAdvMood] = useState<string>('');
+  const [advStrictIngredients, setAdvStrictIngredients] = useState<boolean>(false);
   const tryIdeaSearch = async (terms: string[]) => {
     for (const t of terms) {
       const matches = await searchByName(t);
@@ -461,6 +467,100 @@ function App() {
     }
   };
 
+  const performAdvancedSearch = async () => {
+    setIsLoading(true);
+    setRecipes([]);
+    setError(null);
+    try {
+      const ingList = parseIngredients(advIngredients);
+      const targetMinutes = parseTimeInput(advTime || '') || undefined;
+      const moodTerms = advMood.trim() ? getMoodSearchTerms(advMood.trim()) : [];
+
+      // base candidates
+      let candidates: Recipe[] = [];
+      if (ingList.length > 0) {
+        const base = await searchByIngredient(ingList[0]);
+        candidates = base;
+      } else if (moodTerms.length > 0) {
+        for (const term of moodTerms.slice(0, 3)) {
+          const r = await searchByName(term);
+          candidates = [...candidates, ...r];
+        }
+      } else if (targetMinutes && targetMinutes <= 30) {
+        const quickTerms = ['quick', 'easy', 'simple', 'salad', 'sandwich', 'pasta'];
+        for (const term of quickTerms) {
+          const r = await searchByName(term);
+          candidates = [...candidates, ...r];
+        }
+      } else {
+        // fallback
+        candidates = await searchByName('recipe');
+      }
+
+      // de-dup
+      const seen = new Set<string>();
+      candidates = candidates.filter(c => { if (seen.has(c.idMeal)) return false; seen.add(c.idMeal); return true; });
+
+      // time buckets
+      const buckets = targetMinutes ? buildTimeBuckets(Math.min(Math.max(targetMinutes, 5), 60)) : [60];
+      let finalResults: Recipe[] = [];
+      for (const maxTime of buckets) {
+        const details = await Promise.all(
+          candidates.slice(0, 60).map(async (c) => {
+            try {
+              const d = await getRecipeById(c.idMeal);
+              return d;
+            } catch { return null; }
+          })
+        );
+
+        // filters
+        const filtered = (details.filter(Boolean) as any[]).filter((d) => {
+          // time filter
+          if (targetMinutes && !(d.estimatedTime && d.estimatedTime <= maxTime)) return false;
+          // ingredients filter
+          if (ingList.length > 0) {
+            const recipeIngs = d.ingredients.map((i: any) => i.ingredient.toLowerCase());
+            if (advStrictIngredients) {
+              // strict subset: all recipe ingredients must be within provided
+              const provided = ingList.map(i => i.toLowerCase());
+              if (!recipeIngs.every((ri: string) => provided.some(pi => pi.includes(ri) || ri.includes(pi)))) return false;
+            } else {
+              // relaxed: recipe must contain all specified
+              const containsAll = ingList.every(si => {
+                const s = si.toLowerCase();
+                return recipeIngs.some((ri: string) => ri.includes(s) || s.includes(ri));
+              });
+              if (!containsAll) return false;
+            }
+          }
+          // mood filter
+          if (moodTerms.length > 0) {
+            const name = (d.strMeal || '').toLowerCase();
+            const tags = (d.strTags || '').toLowerCase();
+            const ingStr = d.ingredients.map((i: any) => i.ingredient.toLowerCase()).join(' ');
+            const match = moodTerms.some(mt => name.includes(mt) || tags.includes(mt) || ingStr.includes(mt));
+            if (!match) return false;
+          }
+          return true;
+        }).map((d: any) => {
+          const { ingredients: _ignore, ...rest } = d;
+          return rest as Recipe;
+        });
+
+        if (filtered.length > 0) { finalResults = filtered; break; }
+      }
+
+      setRecipes(finalResults);
+      if (finalResults.length === 0) setError('No recipes found with the combined filters. Try relaxing one filter.');
+    } catch (e) {
+      setError('Failed to search with advanced filters. Please try again.');
+      setTimeout(() => setError(null), 5000);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handlePlannedMealAdd = async (planned: { id: string; date: string; recipeId: string; recipeName: string }) => {
     try {
       let details = await getRecipeById(planned.recipeId);
@@ -714,6 +814,69 @@ function App() {
               Tell me what ingredients you have, what you're craving, or how much time you have.
             </p>
           </div>
+
+          {/* Advanced Filters Toggle */}
+          <div className="mb-4">
+            <button
+              type="button"
+              onClick={() => setShowAdvanced(s => !s)}
+              className="text-sm underline text-accent-700"
+            >
+              {showAdvanced ? 'Hide advanced filters' : 'Show advanced filters'}
+            </button>
+          </div>
+
+          {/* Advanced Filters Panel */}
+          {showAdvanced && (
+            <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border rounded-xl bg-gray-50 dark:bg-gray-900 dark:border-gray-700">
+              <div>
+                <label className="block text-sm font-semibold mb-1 text-gray-700 dark:text-gray-200">Ingredients (comma-separated)</label>
+                <input
+                  type="text"
+                  value={advIngredients}
+                  onChange={(e) => setAdvIngredients(e.target.value)}
+                  placeholder="e.g., chicken, onion, chili"
+                  className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
+                />
+                <label className="mt-2 inline-flex items-center gap-2 text-xs text-gray-700 dark:text-gray-300">
+                  <input type="checkbox" checked={advStrictIngredients} onChange={(e) => setAdvStrictIngredients(e.target.checked)} />
+                  Strict: only my ingredients
+                </label>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold mb-1 text-gray-700 dark:text-gray-200">Time Available</label>
+                <input
+                  type="text"
+                  value={advTime}
+                  onChange={(e) => setAdvTime(e.target.value)}
+                  placeholder="e.g., 30, 18, 1 hour"
+                  className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
+                />
+                <p className="text-xs text-gray-500 mt-1">Snaps to nearest 5 min and expands if needed</p>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold mb-1 text-gray-700 dark:text-gray-200">Mood & Cravings</label>
+                <input
+                  type="text"
+                  value={advMood}
+                  onChange={(e) => setAdvMood(e.target.value)}
+                  placeholder="e.g., spicy, dessert, simple"
+                  className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
+                />
+                <p className="text-xs text-gray-500 mt-1">Uses smart synonyms (e.g., spicy → chili, pepper)</p>
+              </div>
+              <div className="md:col-span-3 flex justify-end">
+                <button
+                  type="button"
+                  onClick={performAdvancedSearch}
+                  disabled={isLoading}
+                  className="px-5 py-3 rounded-xl bg-accent-600 text-white font-semibold hover:bg-accent-700 disabled:opacity-50"
+                >
+                  Search with all filters
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Filter Tabs */}
           <div className="flex flex-wrap gap-3 mb-6">
